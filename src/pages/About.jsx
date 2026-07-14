@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Hand, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const About = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [activeValue, setActiveValue] = useState(0);
   const [activeTeamMember, setActiveTeamMember] = useState(0);
+  const [showSwipeHint, setShowSwipeHint] = useState(true);
 
   useEffect(() => {
     // Dynamic SEO optimization for the About Page
@@ -714,7 +715,10 @@ const About = () => {
         </div>
 
         {/* Our Team - Cinematic Expansion Grid (Team Section) */}
-        <div className="relative z-10 w-full pt-10 pb-10 md:pt-12 md:pb-12 bg-brand-dark overflow-hidden border-t border-white/5">
+        <div
+          className="relative z-10 w-full pt-10 pb-10 md:pt-12 md:pb-12 bg-brand-dark overflow-hidden border-t border-white/5"
+          onPointerDown={() => setShowSwipeHint(false)}
+        >
           <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
             <div className="mb-12 md:mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8">
               <div>
@@ -731,20 +735,47 @@ const About = () => {
             </div>
 
             {/* The Accordion Grid */}
-            <div className="flex w-full h-[560px] md:h-[650px] gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-3 md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
-              {teamMembers.map((member, idx) => {
-                const isActive = activeTeamMember === idx;
-                return (
-                  <div
-                    key={idx}
-                    onMouseEnter={() => setActiveTeamMember(idx)}
-                    onClick={() => setActiveTeamMember(idx)}
-                    className={`relative w-[82vw] min-w-[82vw] md:w-auto md:min-w-0 overflow-hidden rounded-2xl cursor-pointer group snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex-shrink-0 ${
-                      isActive ? 'md:flex-[3.5] bg-brand-orange/10' : 'md:flex-[1] bg-white/[0.02]'
-                    }`}
+            <div className="relative">
+              <AnimatePresence>
+                {showSwipeHint && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    viewport={{ once: true, amount: 0.45 }}
+                    transition={{ duration: 0.35 }}
+                    className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center md:hidden"
+                    aria-hidden="true"
                   >
+                    <div className="rounded-2xl border border-white/15 bg-black/85 px-6 py-5 text-center shadow-[0_20px_60px_rgba(0,0,0,0.65)] backdrop-blur-xl">
+                      <motion.div
+                        animate={{ x: [0, 24, 0] }}
+                        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                        className="mx-auto mb-3 flex w-fit items-center gap-2 text-brand-orange"
+                      >
+                        <Hand size={30} />
+                        <ArrowRight size={24} />
+                      </motion.div>
+                      <p className="text-sm font-bold uppercase tracking-[0.18em] text-white">Swipe right to explore</p>
+                      <p className="mt-2 text-[10px] uppercase tracking-widest text-gray-400">Tap anywhere to dismiss</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="flex w-full h-[560px] md:h-[650px] gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-3 md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                {teamMembers.map((member, idx) => {
+                  const isActive = activeTeamMember === idx;
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => setActiveTeamMember(idx)}
+                      className={`relative w-[82vw] min-w-[82vw] md:w-auto md:min-w-0 overflow-hidden rounded-2xl cursor-pointer snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex-shrink-0 ${
+                        isActive ? 'md:flex-[3.5] bg-brand-orange/10' : 'md:flex-[1] bg-white/[0.02]'
+                      }`}
+                    >
                     {/* Image */}
-                    <div className={`absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? 'scale-105 filter-none opacity-100' : 'scale-100 grayscale opacity-30 md:opacity-50'}`}>
+                    <div className={`absolute inset-0 scale-100 opacity-100 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? 'md:scale-105 md:grayscale-0 md:opacity-100' : 'md:scale-100 md:grayscale md:opacity-50'}`}>
                       {/* Gradient overlay for readability */}
                       <div className={`absolute inset-0 bg-gradient-to-t transition-opacity duration-700 z-10 ${isActive ? 'from-brand-dark via-brand-dark/60 to-transparent opacity-100' : 'from-brand-dark via-transparent to-transparent opacity-80'}`} />
                       <img 
@@ -759,13 +790,13 @@ const About = () => {
                       
                       {/* Vertical Text (Visible when NOT active) */}
                       <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-500 md:block hidden ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                        <span className="text-white/40 group-hover:text-white/80 transition-colors font-display font-bold uppercase tracking-[0.3em] whitespace-nowrap text-sm" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+                          <span className="text-white/40 font-display font-bold uppercase tracking-[0.3em] whitespace-nowrap text-sm" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
                           {member.name}
                         </span>
                       </div>
 
                       {/* Horizontal Details (Visible when active) */}
-                      <div className={`transition-all duration-700 transform ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+                      <div className={`opacity-100 translate-y-0 transition-all duration-700 transform ${isActive ? 'md:opacity-100 md:translate-y-0' : 'md:opacity-0 md:translate-y-12'}`}>
                         <div className="flex items-center gap-3 mb-3">
                           <span className="w-8 md:w-12 h-[1px] bg-brand-orange"></span>
                           <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-brand-orange max-w-full">
@@ -779,10 +810,11 @@ const About = () => {
                     </div>
 
                     {/* Glowing Border effect when active */}
-                    <div className={`absolute inset-0 border border-white/5 rounded-2xl transition-colors duration-700 z-30 pointer-events-none ${isActive ? 'border-brand-orange/40 shadow-[inset_0_0_40px_rgba(255,140,0,0.1)]' : 'group-hover:border-white/20'}`} />
-                  </div>
-                );
-              })}
+                    <div className={`absolute inset-0 border border-white/5 rounded-2xl transition-colors duration-700 z-30 pointer-events-none ${isActive ? 'border-brand-orange/40 shadow-[inset_0_0_40px_rgba(255,140,0,0.1)]' : ''}`} />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
