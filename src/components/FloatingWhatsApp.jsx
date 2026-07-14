@@ -1,15 +1,14 @@
 import { motion } from 'framer-motion';
-import { FileText } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 const FloatingWhatsApp = () => {
   return (
     <>
       <motion.a
         href="/PDF.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Open Captive Events PDF"
-        title="Open company PDF"
+        download="Captive-Events-Company-Profile.pdf"
+        aria-label="Download Captive Events company profile"
+        title="Company Profile"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 1.15 }}
@@ -18,9 +17,9 @@ const FloatingWhatsApp = () => {
         className="group fixed bottom-[5.75rem] right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-gradient-to-br from-brand-red via-brand-orange to-brand-yellow text-white shadow-[0_12px_35px_rgba(255,92,20,0.35)] md:bottom-[7.5rem] md:right-10 md:h-16 md:w-16"
       >
         <span className="absolute inset-0 rounded-full bg-brand-orange/25 blur-xl transition-opacity duration-300 group-hover:opacity-100" />
-        <FileText className="relative h-6 w-6 md:h-7 md:w-7" strokeWidth={2.2} aria-hidden="true" />
+        <Download className="relative h-6 w-6 md:h-7 md:w-7" strokeWidth={2.2} aria-hidden="true" />
         <span className="pointer-events-none absolute bottom-full right-0 mb-3 whitespace-nowrap rounded-xl bg-white px-4 py-2.5 text-xs font-bold text-black shadow-[0_12px_35px_rgba(0,0,0,0.35)] md:text-sm">
-          Download our company profile
+          Company Profile
           <span className="absolute right-5 top-full h-0 w-0 border-x-[7px] border-t-[7px] border-x-transparent border-t-white" />
         </span>
       </motion.a>

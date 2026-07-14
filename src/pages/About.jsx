@@ -731,15 +731,16 @@ const About = () => {
             </div>
 
             {/* The Accordion Grid */}
-            <div className="flex flex-col md:flex-row w-full h-[500px] md:h-[650px] gap-2 md:gap-4 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+            <div className="flex w-full h-[560px] md:h-[650px] gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-3 md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
               {teamMembers.map((member, idx) => {
                 const isActive = activeTeamMember === idx;
                 return (
                   <div
                     key={idx}
                     onMouseEnter={() => setActiveTeamMember(idx)}
-                    className={`relative overflow-hidden rounded-2xl cursor-pointer group transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex-shrink-0 ${
-                      isActive ? 'md:flex-[3.5] flex-[3] bg-brand-orange/10' : 'md:flex-[1] flex-[0.8] bg-white/[0.02]'
+                    onClick={() => setActiveTeamMember(idx)}
+                    className={`relative w-[82vw] min-w-[82vw] md:w-auto md:min-w-0 overflow-hidden rounded-2xl cursor-pointer group snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex-shrink-0 ${
+                      isActive ? 'md:flex-[3.5] bg-brand-orange/10' : 'md:flex-[1] bg-white/[0.02]'
                     }`}
                   >
                     {/* Image */}

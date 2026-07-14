@@ -1,8 +1,7 @@
 import { Fragment } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Sparkles, ArrowRight, Play } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import MagneticButton from '../components/MagneticButton';
 import SpotlightCard from '../components/SpotlightCard';
 
 const testimonials = [
@@ -149,12 +148,6 @@ const Home = () => {
                 <span className="relative z-10 text-white font-bold tracking-wide uppercase text-sm drop-shadow-md">Start Planning</span>
                 <ArrowRight size={20} className="relative z-10 text-white drop-shadow-md" />
               </div>
-            </Link>
-            <Link to="/portfolio" className="w-full sm:w-auto">
-              <MagneticButton variant="outline" className="text-base w-full sm:w-auto px-8 py-4 flex items-center space-x-2">
-                <Play size={18} className="fill-current" />
-                <span>Showreel</span>
-              </MagneticButton>
             </Link>
           </motion.div>
         </motion.div>

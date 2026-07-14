@@ -80,7 +80,9 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3 text-gray-400">
                 <Mail size={20} className="shrink-0" stroke="url(#footer-icon-gradient)" />
-                <span className="text-sm">hello@captiveevents.ae</span>
+                <a href="mailto:info@captiveevents.com" className="text-sm hover:text-brand-orange transition-colors">
+                  info@captiveevents.com
+                </a>
               </li>
             </ul>
           </div>
