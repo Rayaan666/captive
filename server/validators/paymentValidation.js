@@ -18,7 +18,7 @@ export const bookingPaymentSchema = z.object({
   totalAmount: z.union([z.string(), z.number()])
     .transform((value) => String(value).trim())
     .refine((value) => /^\d{1,7}(\.\d{1,2})?$/.test(value), 'Enter a valid amount with up to two decimals')
-    .refine((value) => Number(value) >= 1, 'The minimum payment amount is 1.00'),
+    .refine((value) => Number(value) >= 1, 'The minimum payment amount is AED 1.00'),
 }).strict();
 
 export const orderReferenceSchema = z.string()

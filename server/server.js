@@ -13,7 +13,17 @@ app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || env.clientOrigins.includes(origin.replace(/\/$/, ''))) {
+    const normalizedOrigin = origin?.replace(/\/$/, '');
+    const isLocalDevelopmentOrigin = (() => {
+      if (!origin || env.nodeEnv === 'production') return false;
+      try {
+        return ['localhost', '127.0.0.1', '::1'].includes(new URL(origin).hostname);
+      } catch {
+        return false;
+      }
+    })();
+
+    if (!origin || env.clientOrigins.includes(normalizedOrigin) || isLocalDevelopmentOrigin) {
       return callback(null, true);
     }
     return callback(new Error('Origin is not allowed by CORS.'));

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircle, CalendarDays, CheckCircle2, ChevronDown, LockKeyhole, ShieldCheck } from 'lucide-react';
 import PayNowButton from '../components/PayNowButton';
-import { createPaymentOrder } from '../services/paymentApi';
+import { createPaymentOrder, getPaymentConfig } from '../services/paymentApi';
 
 const initialBooking = {
   fullName: '',
@@ -41,6 +41,21 @@ const localToday = () => {
 const Booking = () => {
   const [booking, setBooking] = useState(initialBooking);
   const [paymentState, setPaymentState] = useState({ isLoading: false, error: '' });
+  const [paymentConfig, setPaymentConfig] = useState({ isLoading: true, data: null, error: '' });
+
+  useEffect(() => {
+    let isActive = true;
+    getPaymentConfig()
+      .then((data) => {
+        if (isActive) setPaymentConfig({ isLoading: false, data, error: '' });
+      })
+      .catch((error) => {
+        if (isActive) setPaymentConfig({ isLoading: false, data: null, error: error.message });
+      });
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   const handleChange = ({ target: { name, value } }) => {
     setBooking((current) => ({ ...current, [name]: value }));
@@ -49,6 +64,10 @@ const Booking = () => {
 
   const handlePayment = async (event) => {
     event.preventDefault();
+    if (!paymentConfig.data) {
+      setPaymentState({ isLoading: false, error: paymentConfig.error || 'Payment configuration is unavailable.' });
+      return;
+    }
     setPaymentState({ isLoading: true, error: '' });
 
     try {
@@ -187,12 +206,35 @@ const Booking = () => {
                 </label>
 
                 <label className="block">
-                  <span className={labelClass}>Total amount *</span>
+                  <span className={labelClass}>Custom payment amount *</span>
                   <span className="relative block">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-brand-orange">AED</span>
-                    <input className={`${inputClass} pl-16`} type="number" name="totalAmount" value={booking.totalAmount} onChange={handleChange} min="1" max="9999999.99" step="0.01" inputMode="decimal" required />
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-brand-orange">
+                      {paymentConfig.data?.currency ?? 'AED'}
+                    </span>
+                    <input
+                      className={`${inputClass} pl-16`}
+                      type="number"
+                      name="totalAmount"
+                      value={booking.totalAmount}
+                      onChange={handleChange}
+                      min={paymentConfig.data?.minimumAmount ?? '1.00'}
+                      max={paymentConfig.data?.maximumAmount ?? '9999999.99'}
+                      step="0.01"
+                      inputMode="decimal"
+                      required
+                    />
                   </span>
+                  <p className="mt-2 text-xs leading-relaxed text-gray-500">
+                    Enter the AED amount agreed with Captive Events. The exact amount is recorded and verified with the gateway.
+                  </p>
                 </label>
+
+                {paymentConfig.error && (
+                  <div role="alert" className="flex items-start gap-3 rounded-xl border border-red-400/20 bg-red-400/10 p-4 text-sm text-red-100">
+                    <AlertCircle size={19} className="mt-0.5 shrink-0 text-red-400" />
+                    <span>{paymentConfig.error}</span>
+                  </div>
+                )}
 
                 {paymentState.error && (
                   <div role="alert" className="flex items-start gap-3 rounded-xl border border-red-400/20 bg-red-400/10 p-4 text-sm text-red-100">
@@ -202,7 +244,7 @@ const Booking = () => {
                 )}
 
                 <div className="border-t border-white/10 pt-7">
-                  <PayNowButton isLoading={paymentState.isLoading} />
+                  <PayNowButton isLoading={paymentState.isLoading} disabled={!paymentConfig.data} />
                   <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
                     <CheckCircle2 size={14} className="text-emerald-500" /> Secure hosted checkout powered by Network International
                   </div>

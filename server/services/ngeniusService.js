@@ -31,7 +31,7 @@ export const getAccessToken = async () => {
   try {
     const response = await axios.post(
       env.tokenUrl,
-      { realmName: 'ni' },
+      { realmName: env.realm },
       {
         timeout: env.requestTimeoutMs,
         headers: {
@@ -60,7 +60,7 @@ export const getAccessToken = async () => {
 
 export const createHostedPaymentOrder = async ({ amountMinor, emailAddress }) => {
   const accessToken = await getAccessToken();
-  const redirectOrigin = env.clientOrigins[0];
+  const redirectOrigin = env.paymentRedirectOrigin ?? env.clientOrigins[0];
   const orderUrl = `${env.apiBaseUrl}/transactions/outlets/${encodeURIComponent(env.outletId)}/orders`;
 
   try {

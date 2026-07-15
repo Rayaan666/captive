@@ -2,6 +2,8 @@
 
 The existing React + Vite website is integrated with Network International N-Genius Online through a separate Express API. The browser never receives the API key, outlet ID, or access token.
 
+For Netlify + Supabase production deployment, follow [`PAYMENT_SETUP.md`](./PAYMENT_SETUP.md).
+
 ## Run locally
 
 1. Open `server/.env` and enter only your merchant credentials:
@@ -68,7 +70,7 @@ server/
   .env
 ```
 
-Pending/confirmed bookings are durably stored in the ignored `server/data/bookings.json` file. The repository module isolates persistence so a managed database can replace the local JSON store for horizontally scaled or serverless production hosting without changing the controller or payment flow.
+Production bookings are stored in Supabase. Local development falls back to the ignored `server/data/bookings.json` file when Supabase variables are not configured.
 
 ## Security notes
 
@@ -76,5 +78,5 @@ Pending/confirmed bookings are durably stored in the ignored `server/data/bookin
 - Helmet, strict CORS, JSON body limits, rate limiting, request timeouts, and server-side validation are enabled.
 - N-Genius responses are verified server-to-server; redirect query parameters are never treated as proof of payment.
 - Only opaque references and non-sensitive status information are returned to the browser.
-- The submitted amount is validated and frozen into the pending booking before checkout. If pricing is generated from a merchant quote or catalogue, resolve that authoritative amount on the server instead of accepting an editable amount field.
-- For multi-instance production deployment, replace the local booking repository with a transactional database and configure N-Genius webhooks as an additional reconciliation path.
+- Custom AED amounts are validated server-side, frozen into the booking, and matched against the gateway response before confirmation.
+- N-Genius webhooks are idempotently recorded in Supabase and independently verified server-to-server before a booking is confirmed.

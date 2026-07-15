@@ -22,6 +22,15 @@ export const createPaymentOrder = async (booking) => {
   }
 };
 
+export const getPaymentConfig = async () => {
+  try {
+    const response = await paymentClient.get('/payments/config');
+    return response.data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error), { cause: error });
+  }
+};
+
 export const getPaymentStatus = async (orderReference) => {
   try {
     const response = await paymentClient.get(`/payments/status/${encodeURIComponent(orderReference)}`);
