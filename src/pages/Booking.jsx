@@ -8,6 +8,7 @@ const initialBooking = {
   fullName: '',
   email: '',
   phone: '',
+  poNumber: '',
   companyName: '',
   eventType: '',
   eventDate: '',
@@ -154,8 +155,8 @@ const Booking = () => {
               <form onSubmit={handlePayment} className="space-y-6">
                 <div className="grid gap-6 sm:grid-cols-2">
                   <label>
-                    <span className={labelClass}>Full name *</span>
-                    <input className={inputClass} type="text" name="fullName" value={booking.fullName} onChange={handleChange} autoComplete="name" maxLength={120} required />
+                    <span className={labelClass}>Customer name *</span>
+                    <input className={inputClass} type="text" name="fullName" value={booking.fullName} onChange={handleChange} autoComplete="name" minLength={2} maxLength={120} required />
                   </label>
                   <label>
                     <span className={labelClass}>Company name</span>
@@ -166,18 +167,23 @@ const Booking = () => {
                 <div className="grid gap-6 sm:grid-cols-2">
                   <label>
                     <span className={labelClass}>Email address *</span>
-                    <input className={inputClass} type="email" name="email" value={booking.email} onChange={handleChange} autoComplete="email" maxLength={254} required />
+                    <input className={inputClass} type="email" name="email" value={booking.email} onChange={handleChange} autoComplete="email" pattern="[^\s@]+@[^\s@]+\.[A-Za-z]{2,63}" title="Enter a complete email address, for example name@company.com" maxLength={254} required />
                   </label>
                   <label>
                     <span className={labelClass}>Phone number *</span>
-                    <input className={inputClass} type="tel" name="phone" value={booking.phone} onChange={handleChange} autoComplete="tel" maxLength={25} required />
+                    <input className={inputClass} type="tel" name="phone" value={booking.phone} onChange={handleChange} autoComplete="tel" inputMode="tel" placeholder="+971501234567" pattern="\+[1-9][0-9]{7,14}" title="Use international format: + followed by 8 to 15 digits, for example +971501234567" minLength={9} maxLength={16} required />
                   </label>
                 </div>
 
                 <label className="block">
-                  <span className={labelClass}>Event type *</span>
+                  <span className={labelClass}>PO number *</span>
+                  <input className={inputClass} type="text" name="poNumber" value={booking.poNumber} onChange={handleChange} placeholder="e.g. PO-2026-001" pattern="[A-Za-z0-9][A-Za-z0-9./_-]*" title="Use only letters, numbers, dots, slashes, underscores or hyphens" maxLength={60} required />
+                </label>
+
+                <label className="block">
+                  <span className={labelClass}>Event type</span>
                   <span className="relative block">
-                    <select className={`${inputClass} appearance-none pr-11`} name="eventType" value={booking.eventType} onChange={handleChange} required>
+                    <select className={`${inputClass} appearance-none pr-11`} name="eventType" value={booking.eventType} onChange={handleChange}>
                       <option value="" disabled className="bg-brand-dark">Select event type</option>
                       {eventTypes.map((eventType) => <option key={eventType} value={eventType} className="bg-brand-dark">{eventType}</option>)}
                     </select>
@@ -187,22 +193,22 @@ const Booking = () => {
 
                 <div className="grid gap-6 md:grid-cols-3">
                   <label>
-                    <span className={labelClass}>Event date *</span>
-                    <input className={inputClass} type="date" name="eventDate" value={booking.eventDate} onChange={handleChange} min={localToday()} required />
+                    <span className={labelClass}>Event date</span>
+                    <input className={inputClass} type="date" name="eventDate" value={booking.eventDate} onChange={handleChange} min={localToday()} />
                   </label>
                   <label>
-                    <span className={labelClass}>Guest count *</span>
-                    <input className={inputClass} type="number" name="guestCount" value={booking.guestCount} onChange={handleChange} min="1" max="1000000" step="1" required />
+                    <span className={labelClass}>Guest count</span>
+                    <input className={inputClass} type="number" name="guestCount" value={booking.guestCount} onChange={handleChange} min="1" max="1000000" step="1" />
                   </label>
                   <label>
-                    <span className={labelClass}>Location *</span>
-                    <input className={inputClass} type="text" name="eventLocation" value={booking.eventLocation} onChange={handleChange} maxLength={200} required />
+                    <span className={labelClass}>Location</span>
+                    <input className={inputClass} type="text" name="eventLocation" value={booking.eventLocation} onChange={handleChange} maxLength={200} />
                   </label>
                 </div>
 
                 <label className="block">
-                  <span className={labelClass}>Message / project brief *</span>
-                  <textarea className={`${inputClass} min-h-32 resize-y`} name="message" value={booking.message} onChange={handleChange} maxLength={3000} required />
+                  <span className={labelClass}>Message / project brief</span>
+                  <textarea className={`${inputClass} min-h-32 resize-y`} name="message" value={booking.message} onChange={handleChange} maxLength={3000} />
                 </label>
 
                 <label className="block">
