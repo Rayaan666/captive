@@ -23,6 +23,16 @@
     cursor: none;
   }
 
+  @media (hover: hover) and (pointer: fine) {
+    html,
+    body,
+    body *,
+    body *::before,
+    body *::after {
+      cursor: none !important;
+    }
+  }
+
   @media (hover: none) and (pointer: coarse) {
     body {
       cursor: auto;
