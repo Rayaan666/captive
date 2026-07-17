@@ -53,11 +53,6 @@ const About = () => {
       role: 'Procurement & Operations Manager',
       image: '/team/4.png'
     },
-    {
-      name: 'Fahad Ali',
-      role: 'Operations Supervisor',
-      image: '/team/5.png'
-    }
   ];
 
   const coreValues = [
@@ -185,7 +180,7 @@ const About = () => {
                   <div className={`text-5xl md:text-6xl font-display font-black tracking-tighter leading-none transition-colors duration-500 ${
                     activeSection !== 'evolution' ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-orange drop-shadow-[0_0_20px_rgba(255,59,59,0.3)]' : 'text-white/20 group-hover:text-white/50'
                   }`}>
-                    1996
+                    1994
                   </div>
                   <div className={`text-xs font-bold uppercase tracking-[0.3em] transition-colors duration-300 ${
                     activeSection !== 'evolution' ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-orange' : 'text-gray-500'
@@ -409,7 +404,7 @@ const About = () => {
                 {/* Footer indicator */}
                 <div className="mt-8 border-t border-white/5 pt-4 flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-500 tracking-[0.2em] uppercase">
-                    CAPTIVE EVENTS • EST 1996
+                    CAPTIVE EVENTS • EST 1994
                   </span>
                   <motion.span 
                     animate={{ x: activeSection === 'mission' ? 5 : 0 }}
@@ -478,7 +473,7 @@ const About = () => {
                 {/* Footer indicator */}
                 <div className="mt-8 border-t border-white/5 pt-4 flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-500 tracking-[0.2em] uppercase">
-                    CAPTIVE EVENTS • EST 1996
+                    CAPTIVE EVENTS • EST 1994
                   </span>
                   <motion.span 
                     animate={{ x: activeSection === 'vision' ? 5 : 0 }}

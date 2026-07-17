@@ -281,7 +281,7 @@ const Home = () => {
                   {/* Luxury Float Badge inside the image */}
                   <div className="absolute bottom-6 left-6 z-20 flex flex-col items-start max-w-[80%]">
                     <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[9px] font-bold tracking-[0.2em] text-brand-orange uppercase mb-3 inline-block shadow-md">
-                      Est. 1996
+                      Est. 1994
                     </span>
                     <h3 className="text-white font-display font-black text-xl md:text-2xl uppercase tracking-wide drop-shadow-md leading-tight">
                       Bespoke Luxury <br />
@@ -590,10 +590,10 @@ const Home = () => {
               </div>
 
               {/* Display Headline */}
-              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black uppercase tracking-tight text-white mb-6 leading-[0.95]">
+              <h2 className="w-full text-[clamp(2rem,10.5vw,3rem)] sm:text-6xl md:text-7xl lg:text-8xl font-display font-black uppercase tracking-tight text-white mb-6 leading-[0.95]">
                 Let's Build <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-orange">Something</span> <br />
-                <span className="text-outline text-outline-hover">Unforgettable</span>
+                <span className="text-outline text-outline-hover whitespace-nowrap">Unforgettable</span>
               </h2>
 
               {/* Description */}
