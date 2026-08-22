@@ -1,1 +1,14 @@
+# Domain Normalization (www to non-www)
+https://www.captiveevents.com/* https://captiveevents.com/:splat 301!
+
+# Legacy Page Redirects
+/about-us /about 301
+/our-services /services 301
+/contact-us /contact 301
+/blog /blogs 301
+
+# Legacy Service Redirects
+/services/event-branding /services/digital-designing-branding 301
+
+# React SPA Fallback (Must always be the last rule)
 /*    /index.html   200

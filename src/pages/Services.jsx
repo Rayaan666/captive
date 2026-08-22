@@ -6,6 +6,7 @@ import {
   Trophy, Zap, Building2, Award, Anchor,
   ArrowRight, ArrowUpRight, Sparkles
 } from "lucide-react";
+import SEO from '../components/SEO';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const services = [
@@ -315,6 +316,7 @@ const PackagesGrid = () => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+      <SEO title="Event Management Services Dubai & UAE | Captive Events" description="Explore Captive Events services including event branding, exhibition stand fabrication, B2B event management, audiovisual production, photography, videography and digital marketing in Dubai." canonical="/services"  />
       {packages.map((pkg, i) => {
         const Icon = pkg.icon;
         const isHovered = hoveredIdx === i;
@@ -490,7 +492,7 @@ const Services = () => {
         <div className="absolute inset-0 z-0">
           <img
             src="/services/hero.png"
-            alt="Captive Events - Premium Event Management Services in Dubai & UAE"
+            alt="Corporate event management setup with an illuminated presentation stage"
             className="h-full w-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/60" />

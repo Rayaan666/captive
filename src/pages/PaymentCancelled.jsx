@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, XCircle } from 'lucide-react';
+import SEO from '../components/SEO';
+
 
 const PaymentCancelled = () => (
   <section className="relative flex min-h-[80vh] items-center justify-center overflow-hidden bg-brand-dark px-4 pb-20 pt-36">
+    <SEO noindex={true} />
     <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-red/10 blur-[120px]" />
     <div className="glass relative z-10 w-full max-w-2xl rounded-3xl border border-white/10 p-8 text-center shadow-2xl sm:p-12">
       <div className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-full bg-white/5">

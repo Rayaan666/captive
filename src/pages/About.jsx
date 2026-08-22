@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Hand, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
+
 
 const About = () => {
   const [activeSection, setActiveSection] = useState(null);
@@ -9,28 +11,7 @@ const About = () => {
   const [activeTeamMember, setActiveTeamMember] = useState(0);
   const [showSwipeHint, setShowSwipeHint] = useState(true);
 
-  useEffect(() => {
-    // Dynamic SEO optimization for the About Page
-    document.title = "About Captive Events | Premium Event Management Company in Dubai, UAE";
-    
-    // Manage Description Meta tag
-    let metaDescription = document.querySelector('meta[name="description"]');
-    if (!metaDescription) {
-      metaDescription = document.createElement('meta');
-      metaDescription.name = "description";
-      document.head.appendChild(metaDescription);
-    }
-    metaDescription.content = "Discover Captive Events, a premier event management company in Dubai, UAE. We specialize in luxury weddings, premium corporate events, and bespoke exhibition stand fabrication with over 30 years of legacy.";
-    
-    // Manage Keywords Meta tag
-    let metaKeywords = document.querySelector('meta[name="keywords"]');
-    if (!metaKeywords) {
-      metaKeywords = document.createElement('meta');
-      metaKeywords.name = "keywords";
-      document.head.appendChild(metaKeywords);
-    }
-    metaKeywords.content = "event management company dubai, corporate event planner uae, luxury wedding planners dubai, exhibition stand fabricators dubai, captive events dubai, premium event agency uae";
-  }, []);
+  
 
   const teamMembers = [
     {
@@ -84,13 +65,14 @@ const About = () => {
 
   return (
     <div className="bg-brand-dark min-h-screen overflow-hidden">
+      <SEO title="About Captive Events | Event Management Company Dubai" description="Discover Captive Events, a Dubai event management company delivering creative corporate events, exhibitions, brand activations and memorable experiences across the UAE." canonical="/about"  />
       {/* Hero Section */}
       <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden pt-32 pb-20">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
             src="/about/hero.png"
-            alt="Captive Events - Award-winning Event Management Company in Dubai, UAE"
+            alt="Captive Events event management team coordinating a corporate production"
             className="h-full w-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/60"></div>

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Cursor from './components/Cursor';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
+import OrganizationSchema from './components/OrganizationSchema';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -31,6 +32,7 @@ function App() {
     <Router>
       <ScrollToTop />
       <div className="min-h-screen flex flex-col font-sans">
+        <OrganizationSchema />
         <Cursor />
         <FloatingWhatsApp />
         <Navbar />

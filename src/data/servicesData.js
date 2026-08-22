@@ -10,8 +10,8 @@ import {
 export const servicesData = [
   {
     slug: "digital-designing-branding",
-    seoTitle: "Digital Designing & Event Branding Services in Dubai | Captive Events",
-    metaDescription: "Captive Events delivers event branding, exhibition concepts, digital mockups, graphic design, branded environments, and creative event visuals across Dubai and the UAE.",
+    seoTitle: "Event Branding & Digital Design Dubai | Captive Events",
+    metaDescription: "Creative event branding and digital design services in Dubai including event concepts, 3D visuals, graphic design, exhibition branding and digital event showcases.",
     heroLabel: "Creative Strategy",
     heroHeading: "Digital Designing & Branding",
     heroDescription: "Create captivating event branding, exhibition stand concepts, creative visuals, digital assets, and brand-focused experiences that strengthen identity, engage audiences, and maximize event impact.",
@@ -65,7 +65,7 @@ export const servicesData = [
   {
     slug: "stand-designing-fabrication",
     seoTitle: "Exhibition Stand Design & Fabrication Dubai | Captive Events",
-    metaDescription: "Premium exhibition stand design, 3D visualization, custom fabrication, installation, and dismantling services for exhibitions and expos across Dubai and the UAE.",
+    metaDescription: "Premium exhibition stand design and fabrication in Dubai, from 3D visualization and custom displays to precision fabrication, installation and dismantling.",
     heroLabel: "Exhibition Excellence",
     heroHeading: "Stand Designing & Fabrication",
     heroDescription: "From concept and 3D visualization to precision fabrication and installation, we design premium exhibition stands, custom displays, and immersive environments built to showcase your brand with excellence.",
@@ -120,8 +120,8 @@ export const servicesData = [
   },
   {
     slug: "b2b-event-management",
-    seoTitle: "B2B Event Management Company Dubai | Captive Events",
-    metaDescription: "Professional B2B event management for conferences, meetings, product launches, networking events, sales gatherings, and corporate experiences across Dubai and the UAE.",
+    seoTitle: "B2B & Corporate Event Management Dubai | Captive Events",
+    metaDescription: "Professional B2B event management in Dubai for conferences, networking events, corporate meetings, business summits and product launches with seamless execution.",
     heroLabel: "Corporate Events",
     heroHeading: "B2B Event Management",
     heroDescription: "Deliver professionally managed conferences, sales meetings, networking events, business summits, product launches, and corporate gatherings with tailored planning, flawless coordination, and measurable outcomes.",
@@ -188,8 +188,8 @@ export const servicesData = [
   },
   {
     slug: "audio-visual-equipment",
-    seoTitle: "Audio Visual Equipment Rental Dubai | Captive Events",
-    metaDescription: "Professional sound systems, LED screens, lighting, staging, projection, recording equipment, speaker systems, and AV production services across Dubai and the UAE.",
+    seoTitle: "Audio Visual Equipment & Event Production Dubai | Captive Events",
+    metaDescription: "Professional audiovisual event production in Dubai with sound systems, LED screens, projection, stage lighting, recording equipment and live technical support.",
     heroLabel: "AV Production",
     heroHeading: "Audio Visual Equipment",
     heroDescription: "Provide professional sound systems, LED displays, lighting, staging, projection, and audiovisual technologies that enhance audience engagement and deliver exceptional live event experiences.",
@@ -247,8 +247,8 @@ export const servicesData = [
   },
   {
     slug: "event-videography-photography",
-    seoTitle: "Event Videography & Photography Dubai | Captive Events",
-    metaDescription: "Professional event photography, cinematic videography, drone coverage, post-production editing, and social media event content across Dubai and the UAE.",
+    seoTitle: "Event Photography & Videography Dubai | Captive Events",
+    metaDescription: "Professional event photography and videography in Dubai covering corporate events, exhibitions and activations with cinematic filming, drone coverage and post-production.",
     heroLabel: "Media & Content",
     heroHeading: "Event Videography & Photography",
     heroDescription: "Capture every moment through cinematic event photography, professional videography, aerial coverage, creative storytelling, and post-production editing that preserves every experience beautifully.",
@@ -273,46 +273,6 @@ export const servicesData = [
       images: [
         { src: "/services/event/photography.png", alt: "Professional event videography crew filming a live corporate production", position: "center center" },
         { src: "/services/event/photography2.png", alt: "Camera operator recording a multi-camera conference production", position: "35% center" },
-      ],
-    },
-    keyCapabilities: [
-      "Professional videography",
-      "Event photography",
-      "Drone coverage",
-      "Multi-camera filming",
-      "Event interviews",
-      "Highlight films",
-      "Sizzle reels",
-      "Social media edits",
-      "Post-event editing",
-      "Final video production",
-    ],
-    process: [
-      "Creative briefing",
-      "Shot list and production plan",
-      "Equipment and crew preparation",
-      "On-site photography and filming",
-      "Drone and aerial coverage",
-      "Editing and color grading",
-      "Final media delivery",
-    ],
-    visualDirection: "Use a premium media-production layout showing camera operators, cinema cameras, drones, editing screens, behind-the-scenes coverage, and a live event stage.",
-    relatedServices: [
-      "audio-visual-equipment",
-      "digital-designing-branding",
-      "copywriting-social-media-marketing"
-    ]
-  },
-  {
-    slug: "copywriting-social-media-marketing",
-    seoTitle: "Event Copywriting & Social Media Marketing Dubai | Captive Events",
-    metaDescription: "Event copywriting, campaign strategy, promotional content, digital marketing, social media planning, and event engagement services across Dubai and the UAE.",
-    heroLabel: "Digital Marketing",
-    heroHeading: "Copywriting & Social Media Marketing",
-    heroDescription: "Develop compelling event copy, promotional campaigns, social media content, digital marketing assets, and audience engagement strategies that maximize visibility before, during, and after every event.",
-    accentColor: "#ff3b3b",
-    icon: Megaphone,
-    image: "/services/6.png",
     overview: {
       eyebrow: "Digital Marketing",
       heading: "Event Copywriting and Social Media Marketing Services",

@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import SEO from '../components/SEO';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -44,6 +45,7 @@ const Home = () => {
 
   return (
     <div className="bg-brand-dark">
+      <SEO title="Event Management Company Dubai & UAE | Captive Events" description="Captive Events is a leading event management company in Dubai delivering corporate events, exhibitions, brand activations, roadshows and premium event production across the UAE." canonical="/" />
       {/* Hero Section */}
       <section
         className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
@@ -53,8 +55,7 @@ const Home = () => {
         <div className="absolute inset-0 z-0">
           <img
             src="/hero-event-bg.png"
-            alt=""
-            aria-hidden="true"
+            alt="Luxury corporate event production with illuminated stage and guest seating"
             className="h-full w-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/55"></div>
@@ -274,7 +275,7 @@ const Home = () => {
 
                   <img 
                     src="/whoweare.png" 
-                    alt="About Captive Events" 
+                    alt="Creative exhibition environment and corporate event management team at work" 
                     className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105" 
                   />
 
@@ -386,8 +387,7 @@ const Home = () => {
             <SpotlightCard className="md:col-span-2 md:row-span-2 group">
               <img
                 src="/service-b2b-event-management.png"
-                alt=""
-                aria-hidden="true"
+                alt="Corporate conference audience facing a professionally produced event stage"
                 className="absolute inset-0 h-full w-full object-cover object-center opacity-90 transition duration-700 group-hover:scale-105 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-black/10"></div>
@@ -403,8 +403,7 @@ const Home = () => {
             <SpotlightCard className="group">
               <img
                 src="/service-digital-branding.png"
-                alt=""
-                aria-hidden="true"
+                alt="Creative 3D event visualization and digital branding mockups on display"
                 className="absolute inset-0 h-full w-full object-cover object-center opacity-90 transition duration-700 group-hover:scale-105 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-black/15"></div>
@@ -420,8 +419,7 @@ const Home = () => {
             <SpotlightCard className="group">
               <img
                 src="/service-stand-fabrication.png"
-                alt=""
-                aria-hidden="true"
+                alt="Custom exhibition stand installation and branded display fabrication"
                 className="absolute inset-0 h-full w-full object-cover object-center opacity-90 transition duration-700 group-hover:scale-105 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-black/15"></div>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Pages -->
+  <url>
+    <loc>https://captiveevents.com/</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/about</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/portfolio</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/blogs</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/contact</loc>
+  </url>
+
+  <!-- Service Pages -->
+  <url>
+    <loc>https://captiveevents.com/services/digital-designing-branding</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/stand-designing-fabrication</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/b2b-event-management</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/audio-visual-equipment</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/event-videography-photography</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/copywriting-social-media-marketing</loc>
+  </url>
+
+  <!-- Package Pages -->
+  <url>
+    <loc>https://captiveevents.com/services/packages/exhibitions-expo-stands</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/packages/roadshows-brand-activations</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/packages/corporate-event-suite</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/packages/real-estate-events</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/packages/industry-galas-award-shows</loc>
+  </url>
+  <url>
+    <loc>https://captiveevents.com/services/packages/luxury-nautical-experiences</loc>
+  </url>
+</urlset>

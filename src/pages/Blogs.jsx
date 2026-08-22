@@ -1,10 +1,13 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import SEO from '../components/SEO';
+
 
 const Blogs = () => {
   return (
     <div className="bg-brand-dark min-h-[80vh] flex items-center justify-center relative overflow-hidden py-16 px-4">
+      <SEO title="Event Management Insights & Ideas Dubai | Captive Events" description="Explore event management insights, exhibition ideas, corporate event trends, brand activation strategies and production expertise from Captive Events in Dubai." canonical="/blogs"  />
       {/* Background radial glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-brand-orange/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
       <div className="absolute top-1/4 left-1/4 w-[35vw] h-[35vw] bg-brand-red/5 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />

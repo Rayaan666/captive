@@ -41,9 +41,9 @@ export const packagesData = [
     icon: Trophy,
     accentColor: "#ff8c00",
 
-    seoTitle: "Exhibition Stand Design & Management Dubai | Captive Events",
+    seoTitle: "Exhibition & Expo Stand Services Dubai | Captive Events",
     metaDescription:
-      "Premium exhibition stand design, 3D fabrication, and expo management services across Dubai and the UAE. Captive Events builds immersive brand environments that attract visitors and elevate your presence.",
+      "Design, fabricate and manage premium exhibition stands and expo displays in Dubai with custom 3D design, fabrication, installation and event support.",
     ogImage: "/services/2.png",
     canonicalPath: "/services/packages/exhibitions-expo-stands",
 
@@ -115,7 +115,7 @@ export const packagesData = [
 
     seoTitle: "Roadshows & Brand Activations Dubai | Captive Events",
     metaDescription:
-      "High-impact roadshows, experiential marketing campaigns, and brand activations across Dubai and the UAE. Captive Events creates memorable brand interactions that drive engagement and visibility.",
+      "Create high-impact roadshows and experiential brand activations in Dubai and the UAE designed to increase engagement, visibility and meaningful audience interaction.",
     ogImage: "/services/6.png",
     canonicalPath: "/services/packages/roadshows-brand-activations",
 
@@ -187,7 +187,7 @@ export const packagesData = [
 
     seoTitle: "Corporate Event Management Dubai | Captive Events",
     metaDescription:
-      "Executive conferences, product launches, networking events, and corporate celebrations delivered with precision across Dubai and the UAE. Captive Events — premium corporate event management.",
+      "Corporate event management in Dubai for networking events, conferences, executive meetings, corporate lunches and business gatherings with seamless professional execution.",
     ogImage: "/services/3.png",
     canonicalPath: "/services/packages/corporate-event-suite",
 
@@ -259,7 +259,7 @@ export const packagesData = [
 
     seoTitle: "Real Estate Event Management Dubai | Captive Events",
     metaDescription:
-      "Premium property launches, investor showcases, sales center activations, and real estate events across Dubai and the UAE. Captive Events creates immersive property experiences that convert.",
+      "Real estate event management in Dubai for property launches, investor showcases, brand activations and promotional experiences designed to engage buyers and stakeholders.",
     ogImage: "/services/1.png",
     canonicalPath: "/services/packages/real-estate-events",
 
@@ -329,9 +329,9 @@ export const packagesData = [
     icon: Award,
     accentColor: "#ffcc00",
 
-    seoTitle: "Gala Dinners & Award Shows Dubai | Captive Events",
+    seoTitle: "Gala Dinner & Award Show Management Dubai | Captive Events",
     metaDescription:
-      "Prestigious gala dinners, award ceremonies, and executive celebrations produced with elegance across Dubai and the UAE. Captive Events — where excellence meets occasion.",
+      "Plan prestigious gala dinners, award shows and corporate celebrations in Dubai with professional event production, stage design and exceptional guest experiences.",
     ogImage: "/services/4.png",
     canonicalPath: "/services/packages/industry-galas-award-shows",
 
@@ -401,9 +401,9 @@ export const packagesData = [
     icon: Anchor,
     accentColor: "#ff8c00",
 
-    seoTitle: "Luxury Yacht Events Dubai | Captive Events",
+    seoTitle: "Luxury Yacht & Nautical Events Dubai | Captive Events",
     metaDescription:
-      "Private yacht charters, luxury nautical experiences, corporate retreats, and exclusive networking events on the water. Captive Events — premium maritime experiences in Dubai.",
+      "Curated luxury nautical events in Dubai including yacht experiences, corporate retreats, fishing adventures, watersports and premium networking experiences.",
     ogImage: "/services/5.png",
     canonicalPath: "/services/packages/luxury-nautical-experiences",
 

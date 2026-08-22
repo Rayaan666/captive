@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { AlertCircle, CalendarDays, CheckCircle2, ChevronDown, LockKeyhole, ShieldCheck } from 'lucide-react';
 import PayNowButton from '../components/PayNowButton';
 import { createPaymentOrder, getPaymentConfig } from '../services/paymentApi';
+import SEO from '../components/SEO';
+
 
 const initialBooking = {
   fullName: '',
@@ -82,6 +84,7 @@ const Booking = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-brand-dark pb-24 pt-32 selection:bg-brand-orange/30">
+      <SEO title="Booking" description="Book an event with Captive Events."  noindex={true} />
       <div className="absolute inset-x-0 top-0 h-[650px] bg-[radial-gradient(circle_at_50%_0%,rgba(249,115,22,0.18),transparent_62%)]" />
       <div className="absolute inset-0 opacity-[0.025] bg-[linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] bg-[size:4rem_4rem]" />
 

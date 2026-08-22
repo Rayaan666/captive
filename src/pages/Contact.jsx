@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { Phone, Mail, Clock, ChevronDown, Send } from 'lucide-react';
+import SEO from '../components/SEO';
+
 
 const WhatsAppIcon = ({ className = '' }) => (
   <svg
@@ -19,6 +21,7 @@ const Contact = () => {
 
   return (
     <div className="bg-brand-dark min-h-screen font-sans selection:bg-brand-orange/30 selection:text-brand-orange overflow-hidden">
+      <SEO title="Contact Captive Events | Event Management Company Dubai" description="Contact Captive Events for corporate events, exhibitions, brand activations, roadshows, gala dinners and audiovisual event production services across Dubai and the UAE." canonical="/contact"  />
       <svg width="0" height="0" className="absolute">
         <defs>
           <linearGradient id="contact-icon-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -33,7 +36,7 @@ const Contact = () => {
         <div className="absolute inset-0 z-0">
           <img
             src="/contact/hero.png"
-            alt="Contact Captive Events - Premium Event Management Services in Dubai & UAE"
+            alt="Corporate networking experience with guests at a premium event"
             className="h-full w-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/60" />

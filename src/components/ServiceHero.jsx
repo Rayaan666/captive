@@ -6,7 +6,8 @@ const ServiceHero = ({ data }) => {
     <section className="relative pt-32 pb-12 md:pt-48 md:pb-16 overflow-hidden">
       <motion.img
         src={data.image}
-        alt={data.heroHeading}
+        alt=""
+        aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover object-center"
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}

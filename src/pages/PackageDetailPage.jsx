@@ -41,7 +41,8 @@ const PackageHero = ({ pkg }) => {
       <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
         <img
           src={pkg.hero.bgImage}
-          alt={`${pkg.hero.heading} — Captive Events`}
+          alt=""
+          aria-hidden="true"
           className="w-full h-full object-cover object-center scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#050505]" />
