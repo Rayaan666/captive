@@ -3,12 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import MagneticButton from './MagneticButton';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import { useLanguage } from './LanguageContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const location = useLocation();
   const { scrollY } = useScroll();
+  const { language, changeLanguage } = useLanguage();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious();
@@ -39,7 +41,7 @@ const Navbar = () => {
       className="fixed top-4 left-0 right-0 z-50 px-4 md:px-0 flex justify-center w-full"
     >
       <div className="glass-heavy px-6 py-2.5 rounded-full flex justify-between items-center w-full max-w-6xl shadow-2xl">
-        <Link to="/" className="flex items-center mr-8 cursor-pointer">
+        <Link to="/" className="flex items-center mr-8 cursor-pointer notranslate">
           <img src="/logo.png" alt="Captive Events Logo" className="h-8 md:h-12 w-auto object-contain" />
         </Link>
 
@@ -58,6 +60,26 @@ const Navbar = () => {
               </Link>
             );
           })}
+          
+          {/* Language Switcher */}
+          <div className="flex items-center gap-2.5 border border-white/10 rounded-full px-3.5 py-1.5 bg-white/5 font-sans text-[11px] font-extrabold uppercase tracking-widest">
+            <button 
+              onClick={() => changeLanguage('en')}
+              className={`${language === 'en' ? 'text-brand-orange' : 'text-gray-400 hover:text-white'} transition-colors cursor-pointer`}
+              aria-label="Switch website language to English"
+            >
+              EN
+            </button>
+            <span className="text-white/20">|</span>
+            <button 
+              onClick={() => changeLanguage('ar')}
+              className={`${language === 'ar' ? 'text-brand-orange animate-pulse' : 'text-gray-400 hover:text-white'} transition-colors cursor-pointer`}
+              aria-label="Switch website language to Arabic"
+            >
+              AR
+            </button>
+          </div>
+
           <Link to="/booking">
             <MagneticButton variant="gradient" className="py-2 px-5 text-sm">Book Now</MagneticButton>
           </Link>
@@ -92,7 +114,26 @@ const Navbar = () => {
               </Link>
             );
           })}
-          <div className="pt-4 mt-2 border-t border-white/10">
+          <div className="pt-4 mt-2 border-t border-white/10 flex flex-col gap-4">
+            {/* Language Switcher */}
+            <div className="flex items-center justify-center gap-4 border border-white/10 rounded-xl py-3 bg-white/5 font-sans text-sm font-black uppercase tracking-widest w-full">
+              <button 
+                onClick={() => { changeLanguage('en'); setIsOpen(false); }}
+                className={`${language === 'en' ? 'text-brand-orange' : 'text-gray-400'} transition-colors cursor-pointer`}
+                aria-label="Switch website language to English"
+              >
+                English
+              </button>
+              <span className="text-white/20">|</span>
+              <button 
+                onClick={() => { changeLanguage('ar'); setIsOpen(false); }}
+                className={`${language === 'ar' ? 'text-brand-orange' : 'text-gray-400'} transition-colors cursor-pointer`}
+                aria-label="Switch website language to Arabic"
+              >
+                العربية
+              </button>
+            </div>
+
             <Link to="/booking" onClick={() => setIsOpen(false)}>
               <MagneticButton variant="gradient" className="w-full">Book Now</MagneticButton>
             </Link>

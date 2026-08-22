@@ -47,7 +47,7 @@ const Footer = () => {
           
           {/* Brand Info */}
           <div className="col-span-1 md:col-span-1">
-            <Link to="/" className="inline-block mb-4 cursor-pointer">
+            <Link to="/" className="inline-block mb-4 cursor-pointer notranslate">
               <img src="/logo.png" alt="Captive Events Logo" className="h-10 md:h-14 w-auto object-contain" />
             </Link>
             <p className="text-gray-400 text-sm mb-6 leading-relaxed">
@@ -104,7 +104,7 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-center space-x-3 text-gray-400">
                 <Phone size={20} className="shrink-0" stroke="url(#footer-icon-gradient)" />
-                <a href="tel:+971581732763" className="text-sm transition-colors hover:text-brand-orange">+971 58 173 2763</a>
+                <a href="tel:+971581732763" className="text-sm transition-colors hover:text-brand-orange notranslate">+971 58 173 2763</a>
               </li>
               <li>
                 <a
@@ -120,7 +120,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3 text-gray-400">
                 <Mail size={20} className="shrink-0" stroke="url(#footer-icon-gradient)" />
-                <a href="mailto:info@captiveevents.com" className="text-sm hover:text-brand-orange transition-colors">
+                <a href="mailto:info@captiveevents.com" className="text-sm hover:text-brand-orange transition-colors notranslate">
                   info@captiveevents.com
                 </a>
               </li>

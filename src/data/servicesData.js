@@ -273,6 +273,46 @@ export const servicesData = [
       images: [
         { src: "/services/event/photography.png", alt: "Professional event videography crew filming a live corporate production", position: "center center" },
         { src: "/services/event/photography2.png", alt: "Camera operator recording a multi-camera conference production", position: "35% center" },
+      ],
+    },
+    keyCapabilities: [
+      "Professional videography",
+      "Event photography",
+      "Drone coverage",
+      "Multi-camera filming",
+      "Event interviews",
+      "Highlight films",
+      "Sizzle reels",
+      "Social media edits",
+      "Post-event editing",
+      "Final video production",
+    ],
+    process: [
+      "Creative briefing",
+      "Shot list and production plan",
+      "Equipment and crew preparation",
+      "On-site photography and filming",
+      "Drone and aerial coverage",
+      "Editing and color grading",
+      "Final media delivery",
+    ],
+    visualDirection: "Use a premium media-production layout showing camera operators, cinema cameras, drones, editing screens, behind-the-scenes coverage, and a live event stage.",
+    relatedServices: [
+      "audio-visual-equipment",
+      "digital-designing-branding",
+      "copywriting-social-media-marketing"
+    ]
+  },
+  {
+    slug: "copywriting-social-media-marketing",
+    seoTitle: "Event Social Media & Copywriting Dubai | Captive Events",
+    metaDescription: "Event copywriting and social media marketing services in Dubai covering promotional campaigns, content strategy, digital assets and audience engagement.",
+    heroLabel: "Digital Marketing",
+    heroHeading: "Copywriting & Social Media Marketing",
+    heroDescription: "Develop compelling event copy, promotional campaigns, social media content, digital marketing assets, and audience engagement strategies that maximize visibility before, during, and after every event.",
+    accentColor: "#ff3b3b",
+    icon: Megaphone,
+    image: "/services/6.png",
     overview: {
       eyebrow: "Digital Marketing",
       heading: "Event Copywriting and Social Media Marketing Services",

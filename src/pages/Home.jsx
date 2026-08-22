@@ -4,39 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SpotlightCard from '../components/SpotlightCard';
-
-const testimonials = [
-  {
-    quote: "Captive Events transformed our exhibition presence. The stand design was absolutely stunning and drew a massive crowd.",
-    author: "Sarah Jenkins",
-    role: "Marketing Director",
-    company: "TechCorp"
-  },
-  {
-    quote: "Their B2B event execution is flawless. From logistics to guest experience, everything was handled to perfection.",
-    author: "Marcus Vance",
-    role: "COO",
-    company: "Innovate Group"
-  },
-  {
-    quote: "Exceptional service! The digital branding and Stand Fabrication exceeded our expectations. Truly a premium team.",
-    author: "Elena Rostova",
-    role: "Brand Manager",
-    company: "Luxora"
-  },
-  {
-    quote: "The attention to detail and creative execution of our brand activation stand was phenomenal. Looking forward to our next collaboration!",
-    author: "Dev Patel",
-    role: "Event Lead",
-    company: "Apex Media"
-  },
-  {
-    quote: "Professional, innovative, and highly efficient. They made our annual summit a roaring success.",
-    author: "Chloe Dupont",
-    role: "VP of Operations",
-    company: "Global Solutions"
-  }
-];
+import TestimonialsReviews from '../components/TestimonialsReviews';
 
 const Home = () => {
   const { scrollY } = useScroll();
@@ -517,56 +485,7 @@ const Home = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="pt-14 pb-10 relative z-10 overflow-hidden border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-orange mb-3 inline-block">Success Stories</span>
-            <h2 className="text-4xl md:text-6xl font-display font-black uppercase tracking-tight text-white">
-              WHAT OUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-orange">CLIENTS SAY</span>
-            </h2>
-          </motion.div>
-        </div>
-
-        {/* Free flowing marquee list */}
-        <div className="relative w-full overflow-hidden flex whitespace-nowrap mask-gradient">
-          <div className="animate-marquee flex gap-6 hover:[animation-play-state:paused] py-4">
-            {[...testimonials, ...testimonials].map((item, idx) => (
-              <div
-                key={idx}
-                className="glass p-8 rounded-2xl border border-white/10 w-[350px] md:w-[400px] shrink-0 whitespace-normal flex flex-col justify-between hover:border-brand-orange/40 hover:bg-white/[0.05] transition-all duration-500 shadow-xl group"
-              >
-                <div>
-                  <div className="flex gap-1 mb-6">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-4 h-4 text-brand-orange fill-current" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-gray-300 font-medium leading-relaxed mb-8 relative z-10 text-sm md:text-base">
-                    "{item.quote}"
-                  </p>
-                </div>
-                <div className="flex items-center gap-4 pt-6 border-t border-white/5">
-                  <div className="w-10 h-10 rounded-full bg-brand-orange/10 flex items-center justify-center border border-brand-orange/20 text-brand-orange font-bold text-sm">
-                    {item.author.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <div>
-                    <h4 className="text-white font-bold text-sm tracking-wide">{item.author}</h4>
-                    <p className="text-gray-400 text-xs">{item.role}, <span className="text-brand-orange/80 font-medium">{item.company}</span></p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsReviews />
 
       {/* CTA Section */}
       <section className="pt-10 pb-24 relative z-10 overflow-hidden border-t border-white/5 bg-brand-dark">

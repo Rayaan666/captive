@@ -29,6 +29,8 @@ const environmentSchema = z.object({
   RESEND_API_KEY: optional(z.string().trim().min(1)),
   PAYMENT_NOTIFICATION_EMAIL: z.email().default('talhaomar1997@gmail.com'),
   PAYMENT_FROM_EMAIL: optional(z.email()),
+  GOOGLE_PLACES_API_KEY: optional(z.string().trim().min(1)),
+  GOOGLE_PLACE_ID: optional(z.string().trim().min(1)),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 }).superRefine((values, context) => {
   const hasSupabaseUrl = Boolean(values.SUPABASE_URL);

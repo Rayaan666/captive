@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { env } from './config/env.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/payments', rateLimit({
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/payments', paymentRoutes);
+app.use('/api/reviews', reviewRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

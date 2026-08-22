@@ -23,6 +23,19 @@
     cursor: none;
   }
 
+  html[lang="ar"] body {
+    font-family: 'Cairo', sans-serif !important;
+  }
+
+  html[lang="ar"] h1,
+  html[lang="ar"] h2,
+  html[lang="ar"] h3,
+  html[lang="ar"] h4,
+  html[lang="ar"] h5,
+  html[lang="ar"] h6 {
+    font-family: 'Cairo', sans-serif !important;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     html,
     body,
