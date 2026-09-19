@@ -134,6 +134,7 @@ const Footer = () => {
           <div className="space-x-4 mt-4 md:mt-0">
             <a href="#" className="text-gray-500 hover:text-brand-orange transition-colors cursor-pointer">Privacy Policy</a>
             <a href="#" className="text-gray-500 hover:text-brand-orange transition-colors cursor-pointer">Terms of Service</a>
+            <Link to="/admin" className="text-gray-600 hover:text-brand-orange transition-colors cursor-pointer text-xs">Admin Portal</Link>
           </div>
         </div>
       </div>

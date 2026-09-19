@@ -12,6 +12,8 @@ import ServiceDetailPage from './pages/ServiceDetailPage';
 import PackageDetailPage from './pages/PackageDetailPage';
 import Portfolio from './pages/Portfolio';
 import Blogs from './pages/Blogs';
+import BlogDetail from './pages/BlogDetail';
+import BlogCMS from './pages/admin/BlogCMS';
 import Contact from './pages/Contact';
 import Booking from './pages/Booking';
 import PaymentSuccess from './pages/PaymentSuccess';
@@ -45,6 +47,9 @@ function App() {
             <Route path="/services/packages/:packageSlug" element={<PackageDetailPage />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogs/:slug" element={<BlogDetail />} />
+            <Route path="/admin" element={<BlogCMS />} />
+            <Route path="/admin/blogs" element={<BlogCMS />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/booking" element={<Booking />} />
             <Route path="/payment/success" element={<PaymentSuccess />} />

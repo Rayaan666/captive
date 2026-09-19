@@ -7,15 +7,15 @@ export const notFound = (req, res) => {
 export const errorHandler = (error, req, res, next) => {
   if (res.headersSent) return next(error);
 
-  const isKnownError = error instanceof ApiError;
-  const statusCode = isKnownError ? error.statusCode : 500;
+  const statusCode = error.statusCode || (error instanceof ApiError ? error.statusCode : 500);
+  const message = error.message || 'An unexpected server error occurred.';
 
-  if (!isKnownError) {
-    console.error('Unhandled server error', error);
+  if (statusCode >= 500) {
+    console.error('Unhandled server error:', error);
   }
 
   res.status(statusCode).json({
-    message: isKnownError ? error.message : 'An unexpected server error occurred.',
-    ...(isKnownError && error.details ? { errors: error.details } : {}),
+    message,
+    ...(error.details ? { errors: error.details } : {}),
   });
 };

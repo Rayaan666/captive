@@ -31,6 +31,7 @@ const environmentSchema = z.object({
   PAYMENT_FROM_EMAIL: optional(z.email()),
   GOOGLE_PLACES_API_KEY: optional(z.string().trim().min(1)),
   GOOGLE_PLACE_ID: optional(z.string().trim().min(1)),
+  BLOG_ADMIN_PASSCODE: z.string().trim().min(4).default('captive-admin-2026'),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 }).superRefine((values, context) => {
   const hasSupabaseUrl = Boolean(values.SUPABASE_URL);
@@ -77,6 +78,7 @@ export const env = Object.freeze({
   notificationEmail: values.PAYMENT_NOTIFICATION_EMAIL,
   paymentFromEmail: values.PAYMENT_FROM_EMAIL,
   resendApiKey: values.RESEND_API_KEY,
+  adminPasscode: values.BLOG_ADMIN_PASSCODE,
   nodeEnv: values.NODE_ENV,
   requestTimeoutMs: 15_000,
 });
