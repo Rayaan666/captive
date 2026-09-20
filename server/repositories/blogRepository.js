@@ -266,3 +266,56 @@ export const deleteBlog = async (id) => {
     return true;
   });
 };
+
+// Upload Image to Supabase Cloud Storage CDN (blog-images bucket)
+export const uploadImageToStorage = async (fileBufferOrDataUrl, originalFilename = 'image.jpg') => {
+  let buffer;
+  let mimeType = 'image/jpeg';
+  let extension = 'jpg';
+
+  if (typeof fileBufferOrDataUrl === 'string' && fileBufferOrDataUrl.startsWith('data:')) {
+    const matches = fileBufferOrDataUrl.match(/^data:(image\/[a-zA-Z0-9+-]+);base64,(.+)$/);
+    if (matches) {
+      mimeType = matches[1];
+      extension = mimeType.split('/')[1] || 'jpg';
+      buffer = Buffer.from(matches[2], 'base64');
+    } else {
+      buffer = Buffer.from(fileBufferOrDataUrl);
+    }
+  } else if (Buffer.isBuffer(fileBufferOrDataUrl)) {
+    buffer = fileBufferOrDataUrl;
+  } else {
+    throw new Error('Invalid image payload.');
+  }
+
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 8);
+  const cleanName = originalFilename.toLowerCase().replace(/[^a-z0-9]/g, '-');
+  const filename = `${timestamp}-${random}-${cleanName}.${extension}`;
+
+  if (useSupabase) {
+    try {
+      const storageUrl = `${env.supabaseUrl}/storage/v1/object/blog-images/${filename}`;
+      await axios.post(storageUrl, buffer, {
+        headers: {
+          apikey: env.supabaseServerKey,
+          ...(!isModernSecretKey ? { Authorization: `Bearer ${env.supabaseServerKey}` } : {}),
+          'Content-Type': mimeType,
+          'x-upsert': 'true',
+        },
+        timeout: 30_000,
+      });
+
+      const publicUrl = `${env.supabaseUrl}/storage/v1/object/public/blog-images/${filename}`;
+      return publicUrl;
+    } catch (error) {
+      console.warn('Supabase storage upload failed:', error.response?.data || error.message);
+    }
+  }
+
+  // Fallback: return data URL if storage bucket is not configured yet
+  if (typeof fileBufferOrDataUrl === 'string') {
+    return fileBufferOrDataUrl;
+  }
+  return `data:${mimeType};base64,${buffer.toString('base64')}`;
+};

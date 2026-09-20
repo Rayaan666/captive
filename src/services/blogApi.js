@@ -114,3 +114,13 @@ export const deleteBlog = async (id) => {
     throw new Error(getErrorMessage(error), { cause: error });
   }
 };
+
+export const uploadBlogImage = async (imagePayload, filename = 'photo.jpg') => {
+  try {
+    const response = await blogClient.post('/blogs/upload-image', { image: imagePayload, filename });
+    return response.data?.url || imagePayload;
+  } catch (error) {
+    console.warn('Cloud storage image upload fallback:', error.message);
+    return imagePayload;
+  }
+};

@@ -87,6 +87,17 @@ export default async (request, context) => {
       return json({ success: true, message: 'Blog post created successfully', data: created }, 201);
     }
 
+    // Admin: Upload image to Cloud Storage
+    if (request.method === 'POST' && pathname === '/api/blogs/upload-image') {
+      if (!verifyAdminToken(getBearerToken(request))) {
+        throw new ApiError(401, 'Unauthorized admin request.');
+      }
+      const body = await readJson(request);
+      if (!body.image) throw new ApiError(400, 'Image data is required.');
+      const publicUrl = await blogRepository.uploadImageToStorage(body.image, body.filename || 'photo.jpg');
+      return json({ success: true, message: 'Image uploaded to cloud storage successfully', url: publicUrl });
+    }
+
     // Single item operations: /api/blogs/:slugOrId
     const pathParts = pathname.split('/');
     if (pathParts.length === 4 && pathParts[1] === 'api' && pathParts[2] === 'blogs') {
@@ -134,6 +145,7 @@ export const config = {
     '/api/blogs',
     '/api/blogs/auth',
     '/api/blogs/admin/all',
+    '/api/blogs/upload-image',
     '/api/blogs/:slugOrId',
   ],
 };

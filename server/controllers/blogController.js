@@ -204,3 +204,21 @@ export const deleteBlog = async (req, res, next) => {
     next(error);
   }
 };
+
+export const uploadBlogImage = async (req, res, next) => {
+  try {
+    const { image, filename } = req.body;
+    if (!image) {
+      throw new ApiError(400, 'Image data is required.');
+    }
+
+    const publicUrl = await blogRepository.uploadImageToStorage(image, filename || 'blog-photo.jpg');
+    res.json({
+      success: true,
+      message: 'Image uploaded to cloud storage successfully',
+      url: publicUrl,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

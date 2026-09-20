@@ -8,6 +8,7 @@ import {
   getBlogs,
   requireAdmin,
   updateBlog,
+  uploadBlogImage,
 } from '../controllers/blogController.js';
 
 const router = Router();
@@ -19,6 +20,7 @@ router.post('/auth', adminAuth);
 // Admin-only collection routes
 router.get('/admin/all', requireAdmin, getAdminBlogs);
 router.post('/', requireAdmin, createBlog);
+router.post('/upload-image', requireAdmin, uploadBlogImage);
 
 // Admin-only member routes
 router.put('/:id', requireAdmin, updateBlog);

@@ -41,6 +41,7 @@ import {
   loginAdmin,
   getStoredAdminToken,
   clearStoredAdminToken,
+  uploadBlogImage,
 } from '../../services/blogApi';
 import SEO from '../../components/SEO';
 
@@ -142,29 +143,62 @@ const BlogCMS = () => {
   const [newImageCaption, setNewImageCaption] = useState('');
   const [imageTab, setImageTab] = useState('upload'); // 'upload' | 'url' | 'presets'
 
-  const handleLocalImageUpload = (e, targetOverride) => {
+  // Client-Side Image Compressor (max 1600px, 85% WebP/JPEG quality)
+  const compressImage = (file, maxWidth = 1600, quality = 0.85) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let { width, height } = img;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressedDataUrl);
+        };
+        img.src = event.target?.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleLocalImageUpload = async (e, targetOverride) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      showToast('Image file size must be less than 10MB.', 'error');
+    if (file.size > 15 * 1024 * 1024) {
+      showToast('Image file size must be under 15MB.', 'error');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result;
+    showToast('Compressing & uploading image to Cloud Storage...', 'info');
+
+    try {
+      // 1. Compress image in browser
+      const compressedUrl = await compressImage(file);
+      
+      // 2. Upload to Cloud Storage CDN
+      const cloudCdnUrl = await uploadBlogImage(compressedUrl, file.name);
       const target = targetOverride || imageTarget;
+
       if (target === 'cover') {
-        setCoverImage(dataUrl);
-        showToast('Cover image updated!', 'success');
+        setCoverImage(cloudCdnUrl);
+        showToast('Cover image uploaded to Cloud CDN!', 'success');
         setIsImageModalOpen(false);
       } else {
-        setNewImageUrl(dataUrl);
-        showToast('Image loaded! Click Insert Image to place into article.', 'success');
+        setNewImageUrl(cloudCdnUrl);
+        showToast('Image uploaded to Cloud CDN! Click Insert Image to place into article.', 'success');
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      showToast('Image upload failed: ' + err.message, 'error');
+    }
   };
 
   const handleInsertImageToArticle = () => {
