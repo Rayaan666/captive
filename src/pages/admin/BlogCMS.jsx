@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
@@ -32,6 +32,11 @@ import {
   UploadCloud,
   Check,
   RefreshCw,
+  Type,
+  Palette,
+  Highlighter,
+  Sliders,
+  ChevronDown,
 } from 'lucide-react';
 import {
   getAdminBlogs,
@@ -44,6 +49,15 @@ import {
   uploadBlogImage,
 } from '../../services/blogApi';
 import SEO from '../../components/SEO';
+import {
+  FONT_PRESETS,
+  COLOR_PRESETS,
+  ACCENT_COLOR_PRESETS,
+  FONT_SIZE_MAP,
+  loadGoogleFont,
+  getResolvedFontFamily,
+  formatInlineHtml,
+} from '../../utils/blogTypography';
 
 const CATEGORY_PRESETS = [
   'Event Trends',
@@ -112,6 +126,7 @@ const BlogCMS = () => {
   const [editingBlogId, setEditingBlogId] = useState(null);
 
   // Form Fields
+  const contentRef = useRef(null);
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [isSlugManual, setIsSlugManual] = useState(false);
@@ -128,6 +143,18 @@ const BlogCMS = () => {
   const [isPublished, setIsPublished] = useState(true);
   const [metaTitle, setMetaTitle] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
+
+  // Typography & Styling State
+  const [fontFamily, setFontFamily] = useState('Inter');
+  const [customFont, setCustomFont] = useState('');
+  const [fontColor, setFontColor] = useState('#ffffff');
+  const [accentColor, setAccentColor] = useState('#ff8c00');
+  const [fontSize, setFontSize] = useState('normal');
+
+  // Body Editor Inline Formatting Toolbar Popovers
+  const [isInlineColorOpen, setIsInlineColorOpen] = useState(false);
+  const [isInlineFontOpen, setIsInlineFontOpen] = useState(false);
+  const [selectedInlineColor, setSelectedInlineColor] = useState('#ff8c00');
 
   // Delete Confirmation Modal
   const [blogToDelete, setBlogToDelete] = useState(null);
@@ -301,6 +328,13 @@ const BlogCMS = () => {
     setIsPublished(true);
     setMetaTitle('');
     setMetaDescription('');
+    setFontFamily('Inter');
+    setCustomFont('');
+    setFontColor('#ffffff');
+    setAccentColor('#ff8c00');
+    setFontSize('normal');
+    setIsInlineColorOpen(false);
+    setIsInlineFontOpen(false);
     setEditorTab('content');
     setIsEditorOpen(true);
   };
@@ -329,6 +363,24 @@ const BlogCMS = () => {
     setIsPublished(blog.isPublished);
     setMetaTitle(blog.metaTitle || '');
     setMetaDescription(blog.metaDescription || '');
+
+    // Typography & Color Settings
+    const existingFont = blog.fontFamily || 'Inter';
+    const isPreset = FONT_PRESETS.some((f) => f.id.toLowerCase() === existingFont.toLowerCase());
+    if (isPreset) {
+      setFontFamily(existingFont);
+      setCustomFont('');
+    } else {
+      setFontFamily('Custom');
+      setCustomFont(existingFont);
+    }
+    loadGoogleFont(existingFont);
+    setFontColor(blog.fontColor || '#ffffff');
+    setAccentColor(blog.accentColor || '#ff8c00');
+    setFontSize(blog.fontSize || 'normal');
+    setIsInlineColorOpen(false);
+    setIsInlineFontOpen(false);
+
     setEditorTab('content');
     setIsEditorOpen(true);
   };
@@ -363,6 +415,45 @@ const BlogCMS = () => {
     setContent((prev) => prev + (prev ? '\n\n' : '') + snippet);
   };
 
+  // Wrap text selection in the body editor
+  const wrapSelection = (prefix, suffix, defaultText = 'sample text') => {
+    const textarea = contentRef.current;
+    if (!textarea) {
+      insertContentSnippet(`${prefix}${defaultText}${suffix}`);
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentVal = textarea.value;
+    const selectedText = currentVal.substring(start, end) || defaultText;
+    const replacement = `${prefix}${selectedText}${suffix}`;
+    const updated = currentVal.substring(0, start) + replacement + currentVal.substring(end);
+    setContent(updated);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + selectedText.length);
+    }, 10);
+  };
+
+  const handleApplyInlineColor = (colorHex) => {
+    wrapSelection(`<span style="color: ${colorHex};">`, '</span>', 'colored text');
+    setIsInlineColorOpen(false);
+  };
+
+  const handleApplyInlineFont = (fontName) => {
+    loadGoogleFont(fontName);
+    wrapSelection(`<span style="font-family: ${getResolvedFontFamily(fontName)};">`, '</span>', 'styled typography text');
+    setIsInlineFontOpen(false);
+  };
+
+  const handleApplyInlineHighlight = (colorHex) => {
+    wrapSelection(
+      `<mark style="background-color: ${colorHex}2b; color: ${colorHex}; padding: 2px 8px; border-radius: 6px; font-weight: 600;">`,
+      '</mark>',
+      'highlighted key point'
+    );
+  };
+
   // Save / Update Blog Submit
   const handleSaveBlog = async (e) => {
     e?.preventDefault();
@@ -377,6 +468,7 @@ const BlogCMS = () => {
     const resolvedExcerpt = excerpt.trim() || 'Captive Events editorial story and insights.';
     const resolvedContent = content.trim() || 'Article content details coming soon.';
     const resolvedCategory = category === 'Custom' ? (customCategory.trim() || 'General') : category;
+    const resolvedFontFamily = (fontFamily === 'Custom' ? customFont.trim() : fontFamily) || 'Inter';
 
     const blogData = {
       title: title.trim(),
@@ -392,6 +484,10 @@ const BlogCMS = () => {
       isPublished,
       metaTitle: metaTitle.trim() || title.trim(),
       metaDescription: metaDescription.trim() || resolvedExcerpt,
+      fontFamily: resolvedFontFamily,
+      fontColor,
+      accentColor,
+      fontSize,
     };
 
     setIsSubmitting(true);
@@ -791,6 +887,17 @@ const BlogCMS = () => {
                       <span className="text-gray-500 text-xs flex items-center gap-1">
                         <Clock size={12} /> {blog.readTime || '5 min read'}
                       </span>
+                      <span
+                        className="px-2 py-0.5 rounded-full text-[10px] font-semibold border border-white/10 bg-white/5 text-gray-300 flex items-center gap-1.5"
+                        title={`Font: ${blog.fontFamily || 'Inter'}, Text Color: ${blog.fontColor || '#ffffff'}`}
+                      >
+                        <Type size={11} className="text-brand-orange" />
+                        <span className="truncate max-w-[90px]">{blog.fontFamily || 'Inter'}</span>
+                        <span
+                          className="w-2 h-2 rounded-full border border-white/20 shrink-0"
+                          style={{ backgroundColor: blog.fontColor || '#ffffff' }}
+                        />
+                      </span>
                     </div>
 
                     <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-brand-orange transition-colors truncate">
@@ -1008,6 +1115,277 @@ const BlogCMS = () => {
                       </div>
                     </div>
 
+                    {/* TYPOGRAPHY & COLOR PALETTE STUDIO */}
+                    <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/10 space-y-5">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-red/20 to-brand-orange/20 border border-brand-orange/30 text-brand-orange flex items-center justify-center">
+                            <Palette size={16} />
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                              Typography &amp; Color Studio
+                            </h4>
+                            <p className="text-[11px] text-gray-400">
+                              Customize font style, body text color, and heading accent for this story
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Font Size Selector Pills */}
+                        <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/10">
+                          <span className="text-[10px] uppercase font-bold text-gray-400 px-2 flex items-center gap-1">
+                            <Sliders size={11} /> Size:
+                          </span>
+                          {Object.entries(FONT_SIZE_MAP).map(([key, cfg]) => (
+                            <button
+                              key={key}
+                              type="button"
+                              onClick={() => setFontSize(key)}
+                              className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer ${
+                                fontSize === key ? 'bg-white/15 text-white' : 'text-gray-400 hover:text-white'
+                              }`}
+                            >
+                              {cfg.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* FONT FAMILY SELECTION */}
+                      <div>
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                          <label className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
+                            <Type size={13} className="text-brand-orange" />
+                            Font Type / Family *
+                          </label>
+                          <span className="text-[11px] text-gray-400 font-mono">
+                            Active: <span className="text-brand-orange">{customFont || fontFamily}</span>
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                          {FONT_PRESETS.map((f) => {
+                            const isSelected = fontFamily === f.id && !customFont;
+                            return (
+                              <button
+                                key={f.id}
+                                type="button"
+                                onClick={() => {
+                                  setFontFamily(f.id);
+                                  setCustomFont('');
+                                  loadGoogleFont(f.id);
+                                }}
+                                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                                  isSelected
+                                    ? 'border-brand-orange bg-brand-orange/15 shadow-sm shadow-brand-orange/20'
+                                    : 'border-white/10 bg-black/40 hover:border-white/25 hover:bg-white/[0.04]'
+                                }`}
+                              >
+                                <span
+                                  className="text-base font-bold text-white block mb-0.5"
+                                  style={{ fontFamily: f.family }}
+                                >
+                                  Aa
+                                </span>
+                                <div>
+                                  <span className="text-[11px] font-semibold text-white block truncate">{f.name}</span>
+                                  <span className="text-[9px] text-gray-400 uppercase tracking-wider block">
+                                    {f.category}
+                                  </span>
+                                </div>
+                              </button>
+                            );
+                          })}
+
+                          {/* Custom Font Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFontFamily('Custom');
+                              if (!customFont) setCustomFont('Lora');
+                              loadGoogleFont(customFont || 'Lora');
+                            }}
+                            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                              fontFamily === 'Custom'
+                                ? 'border-brand-orange bg-brand-orange/15'
+                                : 'border-white/10 bg-black/40 hover:border-white/25'
+                            }`}
+                          >
+                            <span className="text-base font-bold text-brand-orange block mb-0.5">+</span>
+                            <div>
+                              <span className="text-[11px] font-semibold text-white block">Custom Font</span>
+                              <span className="text-[9px] text-gray-400 uppercase tracking-wider block">Type Any Name</span>
+                            </div>
+                          </button>
+                        </div>
+
+                        {/* Custom Font Input if Custom is selected */}
+                        {fontFamily === 'Custom' && (
+                          <div className="mt-3 bg-black/50 border border-brand-orange/30 rounded-xl p-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <div className="text-xs text-brand-orange font-semibold whitespace-nowrap">
+                              Type Any Google Font:
+                            </div>
+                            <input
+                              type="text"
+                              value={customFont}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setCustomFont(val);
+                                if (val.trim()) loadGoogleFont(val.trim());
+                              }}
+                              placeholder="e.g. Lora, Cinzel Decorative, Space Grotesk, Roboto Slab, Playfair..."
+                              className="flex-1 bg-black/60 border border-white/15 focus:border-brand-orange text-white rounded-lg px-3 py-1.5 text-xs outline-none"
+                            />
+                            <span className="text-[10px] text-gray-400">Loads live from Google Fonts</span>
+                          </div>
+                        )}
+
+                        {/* Live Font Specimen Strip */}
+                        <div
+                          className="mt-3 p-3.5 rounded-xl border border-white/10 bg-black/60 flex items-center justify-between gap-4 transition-all"
+                          style={{
+                            fontFamily: getResolvedFontFamily(customFont || fontFamily),
+                            color: fontColor,
+                          }}
+                        >
+                          <span className="text-sm sm:text-base leading-snug">
+                            “The pinnacle of bespoke luxury event architecture, stagecraft &amp; grand galas in Dubai.”
+                          </span>
+                          <span
+                            className="text-[10px] px-2 py-0.5 rounded-md uppercase font-mono tracking-wider shrink-0"
+                            style={{
+                              backgroundColor: `${accentColor}26`,
+                              color: accentColor,
+                              borderColor: `${accentColor}4d`,
+                              borderWidth: 1,
+                            }}
+                          >
+                            {customFont || fontFamily}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* COLOR CONTROLS: TWO COLUMNS (BODY COLOR & ACCENT COLOR) */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-3 border-t border-white/10">
+                        {/* COLUMN 1: BODY FONT COLOR */}
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
+                              <span
+                                className="w-3 h-3 rounded-full border border-white/30 inline-block"
+                                style={{ backgroundColor: fontColor }}
+                              />
+                              Body Text Font Color
+                            </label>
+                            <div className="flex items-center gap-2">
+                              {/* Native Color Picker */}
+                              <div className="relative flex items-center">
+                                <input
+                                  type="color"
+                                  value={fontColor.startsWith('#') && fontColor.length === 7 ? fontColor : '#ffffff'}
+                                  onChange={(e) => setFontColor(e.target.value)}
+                                  className="w-6 h-6 rounded-md cursor-pointer border border-white/20 bg-transparent p-0"
+                                  title="Pick any custom color"
+                                />
+                              </div>
+                              <input
+                                type="text"
+                                value={fontColor}
+                                onChange={(e) => setFontColor(e.target.value)}
+                                placeholder="#ffffff"
+                                className="w-20 bg-black/60 border border-white/15 focus:border-brand-orange text-white text-[11px] font-mono px-2 py-1 rounded-lg outline-none uppercase"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Swatches */}
+                          <div className="flex flex-wrap items-center gap-1.5 bg-black/40 p-2 rounded-xl border border-white/10">
+                            {COLOR_PRESETS.map((color) => {
+                              const isSelected = fontColor.toLowerCase() === color.value.toLowerCase();
+                              return (
+                                <button
+                                  key={color.value}
+                                  type="button"
+                                  onClick={() => setFontColor(color.value)}
+                                  title={`${color.label} (${color.value})`}
+                                  className={`w-6 h-6 rounded-lg transition-transform cursor-pointer relative flex items-center justify-center ${
+                                    isSelected ? 'scale-115 ring-2 ring-brand-orange ring-offset-2 ring-offset-black' : 'hover:scale-110'
+                                  }`}
+                                  style={{ backgroundColor: color.value }}
+                                >
+                                  {isSelected && (
+                                    <Check
+                                      size={12}
+                                      className={['#ffffff', '#fefae0', '#e5e7eb'].includes(color.value) ? 'text-black' : 'text-white'}
+                                    />
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* COLUMN 2: ACCENT & HEADING COLOR */}
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
+                              <span
+                                className="w-3 h-3 rounded-full border border-white/30 inline-block"
+                                style={{ backgroundColor: accentColor }}
+                              />
+                              Heading &amp; Accent Color
+                            </label>
+                            <div className="flex items-center gap-2">
+                              {/* Native Color Picker */}
+                              <div className="relative flex items-center">
+                                <input
+                                  type="color"
+                                  value={accentColor.startsWith('#') && accentColor.length === 7 ? accentColor : '#ff8c00'}
+                                  onChange={(e) => setAccentColor(e.target.value)}
+                                  className="w-6 h-6 rounded-md cursor-pointer border border-white/20 bg-transparent p-0"
+                                  title="Pick any custom accent color"
+                                />
+                              </div>
+                              <input
+                                type="text"
+                                value={accentColor}
+                                onChange={(e) => setAccentColor(e.target.value)}
+                                placeholder="#ff8c00"
+                                className="w-20 bg-black/60 border border-white/15 focus:border-brand-orange text-white text-[11px] font-mono px-2 py-1 rounded-lg outline-none uppercase"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Swatches */}
+                          <div className="flex flex-wrap items-center gap-1.5 bg-black/40 p-2 rounded-xl border border-white/10">
+                            {ACCENT_COLOR_PRESETS.map((color) => {
+                              const isSelected = accentColor.toLowerCase() === color.value.toLowerCase();
+                              return (
+                                <button
+                                  key={color.value}
+                                  type="button"
+                                  onClick={() => setAccentColor(color.value)}
+                                  title={`${color.label} (${color.value})`}
+                                  className={`w-6 h-6 rounded-lg transition-transform cursor-pointer relative flex items-center justify-center ${
+                                    isSelected ? 'scale-115 ring-2 ring-white ring-offset-2 ring-offset-black' : 'hover:scale-110'
+                                  }`}
+                                  style={{ backgroundColor: color.value }}
+                                >
+                                  {isSelected && (
+                                    <Check
+                                      size={12}
+                                      className={['#ffffff', '#fefae0', '#e5e7eb'].includes(color.value) ? 'text-black' : 'text-white'}
+                                    />
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* Cover Image URL & Presets */}
                     <div>
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
@@ -1093,7 +1471,7 @@ const BlogCMS = () => {
                         </label>
                         
                         {/* Formatting Quick Buttons */}
-                        <div className="flex flex-wrap items-center gap-1.5 bg-black/60 p-1.5 rounded-xl border border-white/10">
+                        <div className="flex flex-wrap items-center gap-1.5 bg-black/60 p-1.5 rounded-xl border border-white/10 relative">
                           {/* BIG DEDICATED + ADD IMAGE BUTTON */}
                           <button
                             type="button"
@@ -1112,6 +1490,137 @@ const BlogCMS = () => {
 
                           <div className="w-[1px] h-4 bg-white/20 mx-1" />
 
+                          {/* INLINE FONT FAMILY DROPDOWN */}
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsInlineFontOpen(!isInlineFontOpen);
+                                setIsInlineColorOpen(false);
+                              }}
+                              title="Apply font family to selected text"
+                              className="px-2.5 py-1 rounded-lg text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 text-xs flex items-center gap-1.5 cursor-pointer border border-white/10"
+                            >
+                              <Type size={13} className="text-brand-orange" />
+                              <span className="font-semibold">Font</span>
+                              <ChevronDown size={11} />
+                            </button>
+
+                            {isInlineFontOpen && (
+                              <div className="absolute left-0 top-full mt-2 w-52 bg-brand-black border border-white/20 rounded-xl shadow-2xl p-2 z-50 max-h-60 overflow-y-auto">
+                                <span className="text-[10px] uppercase font-bold text-gray-400 px-2 py-1 block">
+                                  Apply Font to Selection:
+                                </span>
+                                {FONT_PRESETS.map((f) => (
+                                  <button
+                                    key={f.id}
+                                    type="button"
+                                    onClick={() => handleApplyInlineFont(f.id)}
+                                    className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-xs text-white flex items-center justify-between cursor-pointer"
+                                    style={{ fontFamily: f.family }}
+                                  >
+                                    <span>{f.name}</span>
+                                    <span className="text-[9px] text-gray-500 font-sans">{f.category}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* INLINE FONT COLOR PICKER DROPDOWN */}
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsInlineColorOpen(!isInlineColorOpen);
+                                setIsInlineFontOpen(false);
+                              }}
+                              title="Apply text color to selected text"
+                              className="px-2.5 py-1 rounded-lg text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 text-xs flex items-center gap-1.5 cursor-pointer border border-white/10"
+                            >
+                              <Palette size={13} className="text-brand-orange" />
+                              <span className="font-semibold">Color</span>
+                              <span
+                                className="w-2.5 h-2.5 rounded-full border border-white/30"
+                                style={{ backgroundColor: selectedInlineColor }}
+                              />
+                              <ChevronDown size={11} />
+                            </button>
+
+                            {isInlineColorOpen && (
+                              <div className="absolute left-0 top-full mt-2 w-56 bg-brand-black border border-white/20 rounded-xl shadow-2xl p-3 z-50">
+                                <span className="text-[10px] uppercase font-bold text-gray-400 block mb-2">
+                                  Colorize Selected Text:
+                                </span>
+                                <div className="grid grid-cols-6 gap-1.5 mb-3">
+                                  {COLOR_PRESETS.map((c) => (
+                                    <button
+                                      key={c.value}
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedInlineColor(c.value);
+                                        handleApplyInlineColor(c.value);
+                                      }}
+                                      title={c.label}
+                                      className="w-6 h-6 rounded-md hover:scale-115 transition-transform border border-white/10"
+                                      style={{ backgroundColor: c.value }}
+                                    />
+                                  ))}
+                                </div>
+                                <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
+                                  <span className="text-[10px] text-gray-400">Custom:</span>
+                                  <input
+                                    type="color"
+                                    value={selectedInlineColor}
+                                    onChange={(e) => setSelectedInlineColor(e.target.value)}
+                                    className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent p-0"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleApplyInlineColor(selectedInlineColor)}
+                                    className="px-2 py-0.5 rounded bg-brand-orange text-white text-[10px] font-bold cursor-pointer"
+                                  >
+                                    Apply
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* HIGHLIGHT TOOL */}
+                          <button
+                            type="button"
+                            onClick={() => handleApplyInlineHighlight(accentColor)}
+                            title="Highlight selected text with accent badge"
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-brand-orange hover:bg-white/10 text-xs flex items-center gap-1 cursor-pointer"
+                          >
+                            <Highlighter size={13} />
+                          </button>
+
+                          <div className="w-[1px] h-4 bg-white/20 mx-1" />
+
+                          {/* BOLD & ITALIC */}
+                          <button
+                            type="button"
+                            onClick={() => wrapSelection('**', '**', 'bold text')}
+                            title="Bold (**text**)"
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 text-xs cursor-pointer font-bold"
+                          >
+                            <Bold size={13} />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => wrapSelection('*', '*', 'italic text')}
+                            title="Italic (*text*)"
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 text-xs cursor-pointer italic"
+                          >
+                            <Italic size={13} />
+                          </button>
+
+                          <div className="w-[1px] h-4 bg-white/20 mx-1" />
+
+                          {/* Headings, Quote, List */}
                           <button
                             type="button"
                             onClick={() => insertContentSnippet('## Section Heading')}
@@ -1148,10 +1657,11 @@ const BlogCMS = () => {
                       </div>
 
                       <textarea
+                        ref={contentRef}
                         rows={14}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        placeholder="Write the full story here using headings, bullet points, quotes..."
+                        placeholder="Write the full story here using headings, bullet points, quotes, or select text and click Font/Color above..."
                         className="w-full bg-black/40 border border-white/15 focus:border-brand-orange text-white rounded-xl p-4 text-xs font-mono leading-relaxed outline-none"
                       />
                     </div>
@@ -1315,20 +1825,54 @@ const BlogCMS = () => {
 
                 {/* TAB 3: LIVE PREVIEW */}
                 {editorTab === 'preview' && (
-                  <div className="space-y-6 max-w-3xl mx-auto py-4">
-                    <div className="p-3 bg-brand-orange/10 border border-brand-orange/30 rounded-xl text-center text-xs text-brand-orange font-medium">
-                      Live Preview Mode: This is how your article will look to visitors on Captive Events
+                  <div
+                    className="space-y-6 max-w-3xl mx-auto py-4"
+                    style={{
+                      fontFamily: getResolvedFontFamily(customFont || fontFamily),
+                      color: fontColor,
+                    }}
+                  >
+                    <div className="p-3 bg-brand-orange/10 border border-brand-orange/30 rounded-xl flex items-center justify-between text-xs text-brand-orange font-medium">
+                      <span>Live Preview Mode — Exactly how this story will appear on Captive Events</span>
+                      <div className="flex items-center gap-2 font-mono text-[11px]">
+                        <span className="px-2 py-0.5 rounded bg-white/10 text-white">
+                          {customFont || fontFamily}
+                        </span>
+                        <span
+                          className="w-3 h-3 rounded-full border border-white/20 inline-block"
+                          style={{ backgroundColor: fontColor }}
+                          title={`Body color: ${fontColor}`}
+                        />
+                        <span
+                          className="w-3 h-3 rounded-full border border-white/20 inline-block"
+                          style={{ backgroundColor: accentColor }}
+                          title={`Accent: ${accentColor}`}
+                        />
+                      </div>
                     </div>
 
                     {/* Article Header */}
                     <div className="text-center">
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-[0.2em] text-brand-orange border border-brand-orange/30 bg-brand-orange/10 mb-4">
+                      <span
+                        className="inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-[0.2em] mb-4 border"
+                        style={{
+                          borderColor: `${accentColor}4d`,
+                          backgroundColor: `${accentColor}1a`,
+                          color: accentColor,
+                        }}
+                      >
                         {category}
                       </span>
-                      <h1 className="text-3xl sm:text-4xl font-display font-black text-white leading-tight mb-4">
+                      <h1
+                        className="text-3xl sm:text-4xl font-black text-white leading-tight mb-4"
+                        style={{ fontFamily: getResolvedFontFamily(customFont || fontFamily) }}
+                      >
                         {title || 'Untitled Article'}
                       </h1>
-                      <p className="text-gray-300 text-sm max-w-xl mx-auto mb-4 font-light">
+                      <p
+                        className="text-sm max-w-xl mx-auto mb-4 font-light leading-relaxed opacity-90"
+                        style={{ color: fontColor }}
+                      >
                         {excerpt || 'Article summary preview will appear here.'}
                       </p>
                       <div className="flex items-center justify-center gap-3 text-xs text-gray-400">
@@ -1348,40 +1892,85 @@ const BlogCMS = () => {
                     )}
 
                     {/* Formatted Content */}
-                    <div className="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed space-y-4 pt-4 border-t border-white/10">
+                    <div
+                      className="prose prose-invert max-w-none text-sm leading-relaxed space-y-4 pt-4 border-t border-white/10"
+                      style={{
+                        fontFamily: getResolvedFontFamily(customFont || fontFamily),
+                        color: fontColor,
+                        fontSize: FONT_SIZE_MAP[fontSize]?.fontSize || '1rem',
+                        lineHeight: FONT_SIZE_MAP[fontSize]?.lineHeight || '1.75',
+                      }}
+                    >
                       {content.split('\n\n').map((block, idx) => {
                         if (block.startsWith('## ')) {
                           return (
-                            <h2 key={idx} className="text-xl font-bold text-white mt-6 mb-2 border-b border-white/10 pb-2">
-                              {block.replace('## ', '')}
-                            </h2>
+                            <h2
+                              key={idx}
+                              className="text-xl font-bold text-white mt-6 mb-2 border-b pb-2"
+                              style={{
+                                borderColor: `${accentColor}33`,
+                                fontFamily: getResolvedFontFamily(customFont || fontFamily),
+                              }}
+                              dangerouslySetInnerHTML={{ __html: formatInlineHtml(block.replace('## ', '')) }}
+                            />
                           );
                         }
                         if (block.startsWith('### ')) {
                           return (
-                            <h3 key={idx} className="text-base font-bold text-brand-orange mt-4 mb-2">
-                              {block.replace('### ', '')}
-                            </h3>
+                            <h3
+                              key={idx}
+                              className="text-base font-bold mt-4 mb-2"
+                              style={{
+                                color: accentColor,
+                                fontFamily: getResolvedFontFamily(customFont || fontFamily),
+                              }}
+                              dangerouslySetInnerHTML={{ __html: formatInlineHtml(block.replace('### ', '')) }}
+                            />
                           );
                         }
                         if (block.startsWith('> ')) {
                           return (
-                            <blockquote key={idx} className="border-l-4 border-brand-orange bg-brand-orange/5 p-4 rounded-r-xl italic text-gray-200">
-                              {block.replace('> ', '').replace(/^"|"$/g, '')}
-                            </blockquote>
+                            <blockquote
+                              key={idx}
+                              className="border-l-4 p-4 rounded-r-xl italic shadow-inner font-light leading-relaxed"
+                              style={{
+                                borderColor: accentColor,
+                                backgroundColor: `${accentColor}14`,
+                                color: fontColor,
+                                fontFamily: getResolvedFontFamily(customFont || fontFamily),
+                              }}
+                              dangerouslySetInnerHTML={{
+                                __html: formatInlineHtml(block.replace('> ', '').replace(/^"|"$/g, '')),
+                              }}
+                            />
                           );
                         }
                         if (block.startsWith('- ')) {
                           const items = block.split('\n').map((l) => l.replace(/^- /, ''));
                           return (
-                            <ul key={idx} className="list-disc pl-5 space-y-1.5">
+                            <ul key={idx} className="space-y-2 pl-2">
                               {items.map((it, i) => (
-                                <li key={i}>{it}</li>
+                                <li key={i} className="flex items-start gap-2.5">
+                                  <span
+                                    className="w-1.5 h-1.5 rounded-full mt-2 shrink-0"
+                                    style={{ backgroundColor: accentColor }}
+                                  />
+                                  <span
+                                    style={{ color: fontColor }}
+                                    dangerouslySetInnerHTML={{ __html: formatInlineHtml(it) }}
+                                  />
+                                </li>
                               ))}
                             </ul>
                           );
                         }
-                        return <p key={idx}>{block}</p>;
+                        return (
+                          <p
+                            key={idx}
+                            style={{ color: fontColor }}
+                            dangerouslySetInnerHTML={{ __html: formatInlineHtml(block) }}
+                          />
+                        );
                       })}
                     </div>
                   </div>
@@ -1503,17 +2092,42 @@ const BlogCMS = () => {
                 <X size={18} />
               </button>
 
-              <div className="mb-4">
-                <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-brand-orange/10 border border-brand-orange/30 text-brand-orange">
+              {/* Category & Typography Badge */}
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span
+                  className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border"
+                  style={{
+                    borderColor: `${previewBlog.accentColor || '#ff8c00'}4d`,
+                    backgroundColor: `${previewBlog.accentColor || '#ff8c00'}1a`,
+                    color: previewBlog.accentColor || '#ff8c00',
+                  }}
+                >
                   {previewBlog.category}
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/5 border border-white/10 text-gray-300 font-mono flex items-center gap-1.5">
+                  <Type size={11} className="text-brand-orange" />
+                  <span>{previewBlog.fontFamily || 'Inter'}</span>
+                  <span
+                    className="w-2.5 h-2.5 rounded-full border border-white/20"
+                    style={{ backgroundColor: previewBlog.fontColor || '#ffffff' }}
+                  />
                 </span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-display font-black text-white mb-3">
+              <h2
+                className="text-2xl sm:text-3xl font-black text-white mb-3"
+                style={{ fontFamily: getResolvedFontFamily(previewBlog.fontFamily) }}
+              >
                 {previewBlog.title}
               </h2>
 
-              <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+              <p
+                className="text-sm mb-6 leading-relaxed opacity-90 font-light"
+                style={{
+                  color: previewBlog.fontColor || '#ffffff',
+                  fontFamily: getResolvedFontFamily(previewBlog.fontFamily),
+                }}
+              >
                 {previewBlog.excerpt}
               </p>
 
@@ -1527,10 +2141,61 @@ const BlogCMS = () => {
                 </div>
               )}
 
-              <div className="prose prose-invert max-w-none text-gray-300 text-xs leading-relaxed space-y-4">
-                {previewBlog.content.split('\n\n').map((block, i) => (
-                  <p key={i}>{block}</p>
-                ))}
+              <div
+                className="prose prose-invert max-w-none text-xs leading-relaxed space-y-4"
+                style={{
+                  fontFamily: getResolvedFontFamily(previewBlog.fontFamily),
+                  color: previewBlog.fontColor || '#ffffff',
+                }}
+              >
+                {previewBlog.content.split('\n\n').map((block, i) => {
+                  if (block.startsWith('## ')) {
+                    return (
+                      <h3
+                        key={i}
+                        className="text-base font-bold text-white pt-2 border-b border-white/10 pb-1"
+                        style={{ fontFamily: getResolvedFontFamily(previewBlog.fontFamily) }}
+                        dangerouslySetInnerHTML={{ __html: formatInlineHtml(block.replace('## ', '')) }}
+                      />
+                    );
+                  }
+                  if (block.startsWith('### ')) {
+                    return (
+                      <h4
+                        key={i}
+                        className="text-sm font-bold mt-2"
+                        style={{
+                          color: previewBlog.accentColor || '#ff8c00',
+                          fontFamily: getResolvedFontFamily(previewBlog.fontFamily),
+                        }}
+                        dangerouslySetInnerHTML={{ __html: formatInlineHtml(block.replace('### ', '')) }}
+                      />
+                    );
+                  }
+                  if (block.startsWith('> ')) {
+                    return (
+                      <blockquote
+                        key={i}
+                        className="border-l-2 p-2 rounded-r-lg italic"
+                        style={{
+                          borderColor: previewBlog.accentColor || '#ff8c00',
+                          backgroundColor: `${previewBlog.accentColor || '#ff8c00'}14`,
+                          color: previewBlog.fontColor || '#ffffff',
+                        }}
+                        dangerouslySetInnerHTML={{
+                          __html: formatInlineHtml(block.replace('> ', '').replace(/^"|"$/g, '')),
+                        }}
+                      />
+                    );
+                  }
+                  return (
+                    <p
+                      key={i}
+                      style={{ color: previewBlog.fontColor || '#ffffff' }}
+                      dangerouslySetInnerHTML={{ __html: formatInlineHtml(block) }}
+                    />
+                  );
+                })}
               </div>
             </motion.div>
           </div>

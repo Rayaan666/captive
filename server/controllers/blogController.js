@@ -69,7 +69,11 @@ const blogSchema = z.object({
   isPublished: z.boolean().optional().default(true),
   metaTitle: z.string().trim().optional().nullable(),
   metaDescription: z.string().trim().optional().nullable(),
-});
+  fontFamily: z.string().trim().optional().nullable().default('Inter'),
+  fontColor: z.string().trim().optional().nullable().default('#e5e7eb'),
+  accentColor: z.string().trim().optional().nullable().default('#ff8c00'),
+  fontSize: z.string().trim().optional().nullable().default('normal'),
+}).passthrough();
 
 // Controllers
 export const getBlogs = async (req, res, next) => {

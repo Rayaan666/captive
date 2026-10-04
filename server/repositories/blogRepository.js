@@ -23,33 +23,67 @@ const supabaseClient = useSupabase
     })
   : null;
 
+// Extract style metadata from content comment envelope: <!--blog-style:{...}-->
+const extractStyleMeta = (rawContent = '') => {
+  if (typeof rawContent !== 'string') return { cleanContent: '', style: {} };
+  const match = rawContent.match(/^<!--blog-style:({.*?})-->\n*/);
+  if (match) {
+    try {
+      const style = JSON.parse(match[1]);
+      return {
+        cleanContent: rawContent.replace(/^<!--blog-style:({.*?})-->\n*/, ''),
+        style,
+      };
+    } catch {
+      return { cleanContent: rawContent, style: {} };
+    }
+  }
+  return { cleanContent: rawContent, style: {} };
+};
+
 // Map Supabase snake_case row to camelCase JS object
-const normalizeRow = (row) => ({
-  id: row.id,
-  slug: row.slug,
-  title: row.title,
-  excerpt: row.excerpt,
-  content: row.content,
-  coverImage: row.cover_image,
-  category: row.category,
-  author: row.author,
-  authorRole: row.author_role,
-  readTime: row.read_time,
-  tags: Array.isArray(row.tags) ? row.tags : (typeof row.tags === 'string' ? JSON.parse(row.tags || '[]') : []),
-  isPublished: Boolean(row.is_published),
-  metaTitle: row.meta_title,
-  metaDescription: row.meta_description,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
-});
+const normalizeRow = (row) => {
+  const { cleanContent, style } = extractStyleMeta(row.content);
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt,
+    content: cleanContent,
+    coverImage: row.cover_image ?? row.coverImage,
+    category: row.category,
+    author: row.author,
+    authorRole: row.author_role ?? row.authorRole,
+    readTime: row.read_time ?? row.readTime,
+    tags: Array.isArray(row.tags) ? row.tags : (typeof row.tags === 'string' ? JSON.parse(row.tags || '[]') : []),
+    isPublished: Boolean(row.is_published ?? row.isPublished),
+    metaTitle: row.meta_title ?? row.metaTitle,
+    metaDescription: row.meta_description ?? row.metaDescription,
+    fontFamily: row.font_family || row.fontFamily || style.fontFamily || 'Inter',
+    fontColor: row.font_color || row.fontColor || style.fontColor || '#e5e7eb',
+    accentColor: row.accent_color || row.accentColor || style.accentColor || '#ff8c00',
+    fontSize: row.font_size || row.fontSize || style.fontSize || 'normal',
+    createdAt: row.created_at ?? row.createdAt,
+    updatedAt: row.updated_at ?? row.updatedAt,
+  };
+};
 
 // Map JS object to Supabase snake_case row
 const toDatabaseRow = (blog) => {
+  const styleMeta = {
+    fontFamily: blog.fontFamily || 'Inter',
+    fontColor: blog.fontColor || '#e5e7eb',
+    accentColor: blog.accentColor || '#ff8c00',
+    fontSize: blog.fontSize || 'normal',
+  };
+  const rawContent = (blog.content || '').replace(/^<!--blog-style:({.*?})-->\n*/, '');
+  const contentWithMeta = `<!--blog-style:${JSON.stringify(styleMeta)}-->\n${rawContent}`;
+
   const row = {
     slug: blog.slug,
     title: blog.title,
     excerpt: blog.excerpt,
-    content: blog.content,
+    content: contentWithMeta,
     cover_image: blog.coverImage ?? null,
     category: blog.category ?? 'Event Trends',
     author: blog.author ?? 'Captive Events Editorial',
@@ -184,6 +218,10 @@ export const createBlog = async (blogInput) => {
     isPublished: blogInput.isPublished !== undefined ? Boolean(blogInput.isPublished) : true,
     metaTitle: blogInput.metaTitle || blogInput.title,
     metaDescription: blogInput.metaDescription || blogInput.excerpt || '',
+    fontFamily: blogInput.fontFamily || 'Inter',
+    fontColor: blogInput.fontColor || '#e5e7eb',
+    accentColor: blogInput.accentColor || '#ff8c00',
+    fontSize: blogInput.fontSize || 'normal',
     createdAt: now,
     updatedAt: now,
   };

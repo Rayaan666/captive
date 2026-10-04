@@ -18,6 +18,12 @@ import {
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import { getBlogBySlug, getPublishedBlogs } from '../services/blogApi';
+import {
+  loadGoogleFont,
+  getResolvedFontFamily,
+  formatInlineHtml,
+  FONT_SIZE_MAP,
+} from '../utils/blogTypography';
 
 // Custom Social Share Icons
 const WhatsAppShareIcon = () => (
@@ -58,6 +64,7 @@ const BlogDetail = () => {
           setError('Article not found.');
         } else {
           setBlog(data);
+          loadGoogleFont(data.fontFamily);
           // Fetch related stories
           const all = await getPublishedBlogs({ limit: 4 });
           setRelatedBlogs(all.filter((b) => b.slug !== slug).slice(0, 3));
@@ -127,8 +134,16 @@ const BlogDetail = () => {
     );
   }
 
+  const resolvedFontFamily = getResolvedFontFamily(blog.fontFamily);
+  const resolvedFontColor = blog.fontColor || '#e5e7eb';
+  const resolvedAccentColor = blog.accentColor || '#ff8c00';
+  const sizeConfig = FONT_SIZE_MAP[blog.fontSize] || FONT_SIZE_MAP.normal;
+
   return (
-    <div className="bg-brand-dark min-h-screen text-white relative overflow-hidden pt-28 pb-24">
+    <div
+      className="bg-brand-dark min-h-screen text-white relative overflow-hidden pt-28 pb-24"
+      style={{ fontFamily: resolvedFontFamily }}
+    >
       {/* Dynamic SEO */}
       <SEO
         title={blog.metaTitle || `${blog.title} | Captive Events Dubai`}
@@ -160,18 +175,31 @@ const BlogDetail = () => {
         {/* Header Hero */}
         <header className="mb-10 text-center sm:text-left">
           {/* Category Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-brand-orange/30 bg-brand-orange/10 mb-6">
-            <Sparkles size={12} className="text-brand-orange" />
-            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-brand-orange">
+          <div
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border mb-6"
+            style={{
+              borderColor: `${resolvedAccentColor}4d`,
+              backgroundColor: `${resolvedAccentColor}1a`,
+              color: resolvedAccentColor,
+            }}
+          >
+            <Sparkles size={12} style={{ color: resolvedAccentColor }} />
+            <span className="text-[11px] font-black uppercase tracking-[0.2em]">
               {blog.category}
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-black text-white leading-tight tracking-tight mb-6">
+          <h1
+            className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-6"
+            style={{ fontFamily: resolvedFontFamily }}
+          >
             {blog.title}
           </h1>
 
-          <p className="text-gray-300 text-base sm:text-lg font-light leading-relaxed mb-8">
+          <p
+            className="text-base sm:text-lg font-light leading-relaxed mb-8 opacity-90"
+            style={{ color: resolvedFontColor }}
+          >
             {blog.excerpt}
           </p>
 
@@ -219,17 +247,25 @@ const BlogDetail = () => {
         )}
 
         {/* Article Body Content */}
-        <div className="prose prose-invert max-w-none text-gray-200 text-base leading-relaxed space-y-6">
+        <div
+          className="prose prose-invert max-w-none leading-relaxed space-y-6"
+          style={{
+            fontFamily: resolvedFontFamily,
+            color: resolvedFontColor,
+            fontSize: sizeConfig.fontSize,
+            lineHeight: sizeConfig.lineHeight,
+          }}
+        >
           {blog.content.split('\n\n').map((block, idx) => {
             // Heading 2
             if (block.startsWith('## ')) {
               return (
                 <h2
                   key={idx}
-                  className="text-2xl sm:text-3xl font-display font-black text-white pt-8 pb-2 border-b border-white/10 mt-8 mb-4 tracking-tight"
-                >
-                  {block.replace('## ', '')}
-                </h2>
+                  className="text-2xl sm:text-3xl font-black text-white pt-8 pb-2 border-b border-white/10 mt-8 mb-4 tracking-tight"
+                  style={{ fontFamily: resolvedFontFamily }}
+                  dangerouslySetInnerHTML={{ __html: formatInlineHtml(block.replace('## ', '')) }}
+                />
               );
             }
 
@@ -238,10 +274,13 @@ const BlogDetail = () => {
               return (
                 <h3
                   key={idx}
-                  className="text-xl sm:text-2xl font-display font-bold text-brand-orange mt-6 mb-3"
-                >
-                  {block.replace('### ', '')}
-                </h3>
+                  className="text-xl sm:text-2xl font-bold mt-6 mb-3"
+                  style={{
+                    fontFamily: resolvedFontFamily,
+                    color: resolvedAccentColor,
+                  }}
+                  dangerouslySetInnerHTML={{ __html: formatInlineHtml(block.replace('### ', '')) }}
+                />
               );
             }
 
@@ -250,10 +289,17 @@ const BlogDetail = () => {
               return (
                 <blockquote
                   key={idx}
-                  className="border-l-4 border-brand-orange bg-brand-orange/5 p-6 rounded-r-2xl italic text-gray-100 text-lg my-6 shadow-inner font-light leading-relaxed"
-                >
-                  {block.replace('> ', '').replace(/^"|"$/g, '')}
-                </blockquote>
+                  className="border-l-4 p-6 rounded-r-2xl italic text-lg my-6 shadow-inner font-light leading-relaxed"
+                  style={{
+                    borderColor: resolvedAccentColor,
+                    backgroundColor: `${resolvedAccentColor}12`,
+                    color: resolvedFontColor,
+                    fontFamily: resolvedFontFamily,
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: formatInlineHtml(block.replace('> ', '').replace(/^"|"$/g, '')),
+                  }}
+                />
               );
             }
 
@@ -264,8 +310,14 @@ const BlogDetail = () => {
                 <ul key={idx} className="space-y-2.5 pl-2 my-4">
                   {items.map((item, itemIdx) => (
                     <li key={itemIdx} className="flex items-start gap-3">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand-orange mt-2.5 shrink-0" />
-                      <span className="text-gray-300">{item}</span>
+                      <span
+                        className="w-1.5 h-1.5 rounded-full mt-2.5 shrink-0"
+                        style={{ backgroundColor: resolvedAccentColor }}
+                      />
+                      <span
+                        style={{ color: resolvedFontColor }}
+                        dangerouslySetInnerHTML={{ __html: formatInlineHtml(item) }}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -289,9 +341,12 @@ const BlogDetail = () => {
 
             // Standard Paragraph
             return (
-              <p key={idx} className="text-gray-300 font-light leading-relaxed">
-                {block}
-              </p>
+              <p
+                key={idx}
+                className="font-light leading-relaxed"
+                style={{ color: resolvedFontColor }}
+                dangerouslySetInnerHTML={{ __html: formatInlineHtml(block) }}
+              />
             );
           })}
         </div>

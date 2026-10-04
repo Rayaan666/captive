@@ -16,9 +16,19 @@ create table if not exists public.blogs (
   is_published boolean not null default true,
   meta_title text,
   meta_description text,
+  font_family text default 'Inter',
+  font_color text default '#e5e7eb',
+  accent_color text default '#ff8c00',
+  font_size text default 'normal',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Safe migrations for existing databases
+alter table public.blogs add column if not exists font_family text default 'Inter';
+alter table public.blogs add column if not exists font_color text default '#e5e7eb';
+alter table public.blogs add column if not exists accent_color text default '#ff8c00';
+alter table public.blogs add column if not exists font_size text default 'normal';
 
 -- Indexes for fast queries
 create index if not exists blogs_slug_idx on public.blogs (slug);
